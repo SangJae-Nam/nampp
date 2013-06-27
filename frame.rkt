@@ -72,6 +72,12 @@
                          ;;코드 입력창에 입력한 것을 인터프리트 한다. - 이 때 결과는 image-canvas에 그려진다.
                          (send t save-file "code_temp.txt" 'text #t)
                          (runfile "code_temp.txt")
+;;(n_circle 40 100 100 "outline" "red")
+;;(n_line 50 30 100 100 "black"  )
+;;(n_triangle 40 60 80 100 100 "solid" "seagreen" )
+;;(n_rectangle 40 20  200 200  "solid" "blue")
+;;(n_polygon 70 5 400 400 "outline" "red"  )
+;;(n_text "[type-object-oriented]" 200 100 24 "cyan" )
                          ;;이미지를 캔버스에 그린다.
                          (draw-canvas))])
 
@@ -95,6 +101,43 @@
                       (set! image-canvas (empty-scene 600 600))))
 
 ;;그리기 함수들
+;;line 그리는 함수 
+(define n_line
+  (lambda(x y i j color)
+    (if (> (+ (* x x) (* y y)) (+ (* i i) (* j j)))
+        (set! image-canvas (place-image (line (- x i) (- y j) color) i j image-canvas))
+        (set! image-canvas (place-image (line (- i x) (- j y) color) x y image-canvas)))))
+
+;;circle 그리는 함수
+(define n_circle
+  (lambda (r i j ls color)
+    (set! image-canvas (place-image (circle r ls color) i j image-canvas))))
+
+;;triangle 그리는 함수
+(define n_triangle
+  (lambda (a b c i j ls color)
+    (set! image-canvas (place-image (triangle/sss a b c ls color) i j image-canvas))))
+
+;;rectangle 그리는 함수
+(define n_rectangle
+  (lambda (a b i j ls color)
+          (set! image-canvas (place-image (rectangle a b ls color) i j image-canvas))))
+
+;;polygon 그리는 함수 
+(define n_polygon
+  (lambda(r n i j ls color)
+    (set! image-canvas (place-image (regular-polygon r n ls color) i j image-canvas))))
+
+;;문자 
+(define n_text
+  (lambda (t i j size color)
+    (set! image-canvas (place-image (text t size color) i j image-canvas))))
+
+      
+
+    
+
+
 
 ;;화면에 출력하는 함수
 (define draw-canvas (lambda ()
