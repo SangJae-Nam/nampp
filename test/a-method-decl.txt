@@ -1,0 +1,17 @@
+% =========================================================
+% a-method-decl  test - Normal case
+class cl extends object
+ field i
+
+ method void initialize(x: int)
+  begin
+   set i = x;
+  end
+
+ method void methodDecl1(x: int)
+  begin
+   set i = -(x,1);
+  end
+
+% ==
+% =========================================================
