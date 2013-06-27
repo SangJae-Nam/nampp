@@ -623,8 +623,7 @@
         (format "~a" num))
       (bool-val (bool)
         (format "~a" bool))
-      (string-val (str)
-        str)
+      (string-val (str) str)
       (proc-val (proc1)
         (cases proc proc1
           (procedure (vars v-types body saved-env)

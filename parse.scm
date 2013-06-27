@@ -127,8 +127,7 @@
   (self-exp)
   
 ;; super-call-exp(method-name rands)의 cfg  
-  (super-call-exp (method-name symbol?) (rands (list-of expression?)))
-                  
+  (super-call-exp (method-name symbol?) (rands (list-of expression?)))                
                   
 ;; cast-exp(obj-exp c-name)의 cfg
 ;; Expression ::= cast Expression Identifier
@@ -136,7 +135,32 @@
   
 ;; instanceof-exp(exp name)의 cfg
 ;; Expression ::= instanceof Expression Identifier  
-  (instanceof-exp (exp expression?) (name symbol?)))
+  (instanceof-exp (exp expression?) (name symbol?))
+  
+;; line-exp
+;; Expression ::= line(Expression, Expression, Expression, Expression, Expression)
+  (line-exp (x expression?) (y expression?) (i expression?) (j expression?) (color expression?))
+  
+;; circle-exp
+;; Expression ::= circle(Expression, Expression, Expression, Expression, Expression)
+  (circle-exp (r expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?)) 
+  
+  ;; triangle-exp
+  ;; Expression ::= triangle(Expression, Expression, Expression, Expression, Expression, Expresion, Expression)
+  (triangle-exp (a expression?) (b expression?) (c expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?))
+  
+  ;; rectangle-exp
+  ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expresion)
+  (rectangle-exp (a expression?) (b expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?))
+  
+  ;; polygon-exp
+  ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expresion)
+  (polygon-exp (r expression?) (n expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?))
+  
+  ;; textout-exp
+  ;; Expression ::= text-out(Expression, Expression, Expression, Expression, Expression)
+  (textout-exp (text expression?) (i expression?) (j expression?) (size expression?) (color expression?))
+  )
 ;; ======================================================================
 
 (define-datatype type type?
@@ -187,7 +211,7 @@
     (identifier (letter (arbno (or letter digit "_" "?" "-"))) symbol)
     (number (digit (arbno digit)) number)
     (number ("-" digit (arbno digit)) number)
-    (string ("\"" (arbno any) "\"") string)))
+    (string (#\" (arbno (not #\")) #\") string)))
 
 (define parser-rules
   ;; Program ::= {ClassDecl}* Expression
@@ -282,6 +306,26 @@
 
     ;; Expression ::= instanceof Expression Identifier  
     (expression ("instanceof" expression identifier) instanceof-exp)
+    
+    ;;여기서부터 그리기 exp
+    
+    ;; Expression ::= line(Expression, Expression, Expression, Expression, Expression)
+    (expression ("line" "(" expression "," expression "," expression "," expression "," expression ")") line-exp)
+   
+    ;; Expression ::= circle(Expression, Expression, Expression, Expression, Expression)
+    (expression ("circle" "(" expression "," expression "," expression "," expression "," expression ")") circle-exp)
+    
+    ;; Expression ::= triangle(Expression, Expression, Expression, Expression, Expression, Expression, Expression)
+    (expression ("triangle" "(" expression "," expression "," expression "," expression "," expression "," expression "," expression ")") triangle-exp)
+    
+    ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expression)
+    (expression ("rectangle" "(" expression "," expression "," expression "," expression "," expression "," expression ")") rectangle-exp)
+    
+    ;; Expression ::= regular-polygon(Expression, Expression, Expression, Expression, Expression, Expression)
+    (expression ("regular-polygon" "(" expression "," expression "," expression "," expression "," expression "," expression ")") polygon-exp)
+    
+    ;; Expression ::= text-out(Expression, Expression, Expression, Expression, Expression)
+    (expression ("text-out" "(" expression "," expression "," expression "," expression "," expression ")") textout-exp)
     
     ;; type ::= int
     (type ("int") int-type)
@@ -393,6 +437,19 @@
         (string-append "instanceof " (exp->string exp) (symbol->string name)))
       (cast-exp (obj-exp c-name)
         (string-append "cast " (exp->string obj-exp) (symbol->string c-name)))
+      ;;그리기 관련
+      (line-exp (x y i j color)
+        (string-append "line(" x "," y "," i "," j "," color ")"))
+      (circle-exp (r i j outline_solid color)
+        (string-append "circle(" r "," i "," j "," outline_solid "," color ")"))
+      (triangle-exp (a b c i j outline_solid color)
+        (string-append "triangle(" a "," b "," c "," i "," j "," outline_solid "," color ")"))
+      (rectangle-exp (a b i j outline_solid color)
+        (string-append "rectangle(" a "," b "," i "," j "," outline_solid "," color ")"))
+      (polygon-exp (r n i j outline_solid color)
+        (string-append "regular-polygon(" r "," n "," i "," j "," outline_solid "," color ")"))
+      (textout-exp (text i j size color)
+        (string-append "text-out(" text "," i "," j "," size "," color ")"))
       (else
         (eopl:error 'exp->string "arg=~a" exp)))))
 ;; ======================================================================
