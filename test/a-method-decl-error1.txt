@@ -1,0 +1,17 @@
+% =========================================================
+% a-method-decl  test - Error case
+class cl extends object
+ field i
+
+ method void initialize(x: int)
+  begin
+   set i = x;
+  end
+
+ method methodDecl1(x: int)
+  begin
+   set i = -(x,1);
+  end
+
+% == ∏Æ≈œ ≈∏¿‘ ¡§¿««ÿ¡‡æﬂµ 
+% =========================================================
