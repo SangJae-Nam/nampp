@@ -52,6 +52,17 @@
 ;; Expression ::= Identifier
   (var-exp (var symbol?))
   
+;; true-exp()의 context free grammar
+;; Expression :: true
+  (true-exp)
+
+;; false-exp()의 context free grammar
+;; Expression :: false
+  (false-exp)
+  
+;; string-exp(str)의 context free grammar
+  (string-exp (str string?))
+
 ;; zero-exp(exp1)의 cfg
 ;; Expression ::= zero?(Expression)  
   (zero?-exp (exp1 expression?))
@@ -137,6 +148,10 @@
 ;; type ::= bool  
   (bool-type)
   
+;; string-type()의 cfg
+;; type ::= string
+  (string-type)
+  
 ;; proc-type(arg-types result-type)의 cfg  
 ;; type ::= ({type}+(,) -> type)  
   (proc-type (arg-types (list-of type?)) (result-type type?))
@@ -171,7 +186,8 @@
     (comment ("%" (arbno (not #\newline))) skip)
     (identifier (letter (arbno (or letter digit "_" "?" "-"))) symbol)
     (number (digit (arbno digit)) number)
-    (number ("-" digit (arbno digit)) number)))
+    (number ("-" digit (arbno digit)) number)
+    (string ("\"" (arbno any) "\"") string)))
 
 (define parser-rules
   ;; Program ::= {ClassDecl}* Expression
@@ -196,6 +212,15 @@
     
     ;; Expression ::= Identifier
     (expression (identifier) var-exp)
+    
+    ;; Expression ::= true
+    (expression ("true") true-exp)
+    
+    ;; Expression ::= false
+    (expression ("false") false-exp)
+    
+    ;; Expression :: String
+    (expression (string) string-exp)
     
     ;; Expression ::= zero?(Expression)  
     (expression ("zero?" "(" expression ")") zero?-exp)
@@ -264,6 +289,9 @@
     ;; type ::= bool
     (type ("bool") bool-type)
     
+    ;; type ::= string
+    (type ("string") string-type)
+    
     ;; type ::= ({type}+(,) -> type)
     (type ("(" type (arbno "," type) "->" type ")") proc-type)
     
@@ -300,6 +328,10 @@
         (format "~a" num))
       (var-exp (var)
         (format "~a" var))
+      (true-exp () "true")
+      (false-exp () "false")
+      (string-exp (str)
+         (format "\"~a\"" str))
       (zero?-exp (exp1)
         (format "zero?(~a)" (exp->string exp1)))
       (diff-exp (exp1 exp2)
@@ -370,6 +402,7 @@
     (cases type ty
       (int-type () "int")
       (bool-type () "bool")
+      (string-type () "string")
       (proc-type (arg-types result-type)
        (string-append "(" (args-type arg-types) ")" "->" (type->string result-type)))
       (void-type () "void")

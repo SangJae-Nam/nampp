@@ -7,6 +7,7 @@ License
 ====================================================
 NAM++
 Copyright (C) 2013 YongGyu Kim, DongWook Jung, SangJae Nam, SeungJu Park, JaeHo Lim, MinSueob Jung
+Project advisor: Prof. Dongha Shin
 
 NAM++ is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

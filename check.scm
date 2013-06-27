@@ -46,6 +46,12 @@
         (num-val num))
       (var-exp (var)
         (deref (apply-env env var)))
+      (true-exp ()
+        (bool-val #t))
+      (false-exp ()
+        (bool-val #f))
+      (string-exp (str)
+        (string-val str))
       (zero?-exp (exp1)
         (let ((num1 (expval->num (value-of exp1 env))))
           (if (zero? num1)
@@ -221,8 +227,6 @@
 
 
 
-
-
 (define check
   (lambda (string)
     (type-of-program (scan&parse string))))
@@ -251,6 +255,11 @@
       (const-exp (num) (int-type))
       
       (var-exp (var) (apply-tenv tenv var))
+      
+      (true-exp () (bool-type))
+      (false-exp () (bool-type))
+      
+      (string-exp (str) (string-type))
       
       (diff-exp (exp1 exp2)
                 (let ((type1 (type-of exp1 tenv))
@@ -703,10 +712,10 @@
 
 (define init-tenv
   (lambda ()
-    (extend-tenv
-     '(i v x)
-     (list (int-type) (int-type) (int-type))
-     (empty-tenv))))
+    ;(extend-tenv
+    ; '(i v x)
+    ; (list (int-type) (int-type) (int-type))
+     (empty-tenv)))
 
 (define apply-tenv
   (lambda (env search-sym)

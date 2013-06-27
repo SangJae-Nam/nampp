@@ -568,6 +568,7 @@
 (define-datatype expval expval?
   (num-val (num number?))
   (bool-val (bool boolean?))
+  (string-val (str string?))
   (proc-val (proc1 proc?))
   (obj-val (obj object?))
   (list-val (lst (list-of expval?))))
@@ -589,6 +590,13 @@
     (cases expval ev
       (bool-val (bool) bool)
       (else (eopl:error 'expval->num "arg=~a" ev)))))
+
+;;expval->string과 이름 겹침, 이것은 expval에서 string을 추출하는 것
+(define expval->string_
+  (lambda (ev)
+    (cases expval ev
+      (string-val (str) str)
+      (else (eopl:error 'expval->string_ "arg=~a" ev)))))
 
 (define expval->proc
   (lambda (ev)
@@ -615,6 +623,8 @@
         (format "~a" num))
       (bool-val (bool)
         (format "~a" bool))
+      (string-val (str)
+        str)
       (proc-val (proc1)
         (cases proc proc1
           (procedure (vars v-types body saved-env)
