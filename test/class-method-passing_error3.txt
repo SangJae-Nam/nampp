@@ -1,0 +1,13 @@
+% =========================================================
+% class, method passing test - Error case
+
+class person extends object
+	field int age
+	field bool man
+	method int getAge()
+		man %¿¡·¯
+	method bool getMan()
+		man
+
+let o1 = new person()
+	in send o1 getAge()

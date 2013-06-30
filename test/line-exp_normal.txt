@@ -1,0 +1,36 @@
+% =========================================================
+% line-exp  test - Normal case
+class Line extends object
+ field int x
+ field int y
+ field int i
+ field int j
+ field string color
+ method void initialize(xx: int, yy: int, ii: int, jj: int, cc: string)
+  begin
+   set x = xx;
+   set y = yy;
+   set i = ii;
+   set j = jj;
+   set color = cc
+  end
+ method void setLine(xx: int, yy: int, ii: int, jj: int)
+  begin
+   set x = xx;
+   set y = yy;
+   set i = ii;
+   set j = jj
+  end
+ method void setColor(cc: string)
+  begin
+   set color = cc
+  end
+ method bool drawLine()
+  begin
+   line(x,y,i,j,color)
+  end
+ let c1 = new Line(10,10, 20,20, "green")
+ in send c1 drawLine()
+
+% == 
+% =========================================================

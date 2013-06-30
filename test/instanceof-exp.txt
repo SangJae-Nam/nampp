@@ -1,0 +1,30 @@
+* instanceof-exp
+% =========================================================
+% instanceof-exp  test - Normal case
+
+interface inter
+ method bool equal (t : inter)
+
+class c1 extends object implements inter
+ 
+ method void initialize()
+
+ method bool equal (t: inter)
+  if instanceof t c1
+  then #t
+  else #f
+
+class c2 extends object implements inter
+ method void initialize()
+
+ method bool equal (t: inter)
+  if instanceof t c2
+  then #t
+  else #f
+
+ let o1 = new c1()
+  in send o1 equal(new c2())
+
+% == #f
+% =========================================================
+ 

@@ -12,13 +12,11 @@
 
 
 ;;;;;;;;;;;그래픽 표현 함수 - 인터프리터에서 호출한다
-;;line 그리는 함수 
+;;line 그리는 함수
+;; line함수는 0,0을 기준으로 (x,y)까지의 선을 그리기 때문에 argument로 입력된 두 점을 (0,0)으로 옮긴 직선을 생성한 후 이를 원래 좌표로 이동시킨다.
 (define n_line
   (lambda(x y i j color)
-    (display color)
-    (if (> (+ (* x x) (* y y)) (+ (* i i) (* j j)))
-        (set! image-canvas (place-image (line (- x i) (- y j) color) i j image-canvas))
-        (set! image-canvas (place-image (line (- i x) (- j y) color) x y image-canvas)))))
+    (set! image-canvas (place-image (line (- x i) (- y j) color) (/ (+ x i) 2) (/ (+ y j) 2) image-canvas))))
 
 ;;circle 그리는 함수
 (define n_circle

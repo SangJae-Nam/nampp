@@ -1,0 +1,4 @@
+% =========================================================
+% if-exp test - Type error case2
+
+if zero?("test") then 10 else 50

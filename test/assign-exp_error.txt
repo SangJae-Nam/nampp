@@ -1,0 +1,6 @@
+% =========================================================
+% assign-exp test - Error case
+
+let v1 = "hello" in
+	set v2 = "test"
+v1

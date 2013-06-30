@@ -1,0 +1,22 @@
+* an-abstract-method-decl 
+% =========================================================
+% an-abstract-method-decl  test - Normal case
+interface inter
+ method int sum(x: int)
+
+class cl extends object implements inter
+ field i
+
+ method void initialize(x: int)
+  begin
+   set i = x;
+  end
+
+ method int sum(x: int)
+  begin
+   set i = +(x,1);
+  end
+
+% == 
+% =========================================================
+

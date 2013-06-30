@@ -1,0 +1,23 @@
+* super-call-exp
+% =========================================================
+% super-call-exp  test - Error case
+
+class c1 extends object
+ method void initialize()
+ 
+ method int m2 () 13
+
+class c2 extends c1
+ method int m1 () 22
+ method int m2 () 23
+ method int m3 () super m1()
+
+class c3 extends c2
+ method int m1 () 32
+ method int m2 () 33
+
+let o3 = new c3()
+ in send o3 m3()
+% == 
+% =========================================================
+

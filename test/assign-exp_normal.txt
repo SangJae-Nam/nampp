@@ -1,0 +1,6 @@
+% =========================================================
+% assign-exp test - Normal case
+
+let v1 = "hello" in
+	set v1 = "test"
+v1

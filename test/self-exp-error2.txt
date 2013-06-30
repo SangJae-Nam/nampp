@@ -1,0 +1,14 @@
+* self-exp-error
+% =========================================================
+% self-exp  test - Error case
+class c1 extends object
+
+ method void initialize()
+ method int m1 () send self m3()
+ method int m2 () 13
+
+
+let o1 = new c1()
+ in send o1 m1()
+% == 존재하지 않는 메소드 호출
+% =========================================================

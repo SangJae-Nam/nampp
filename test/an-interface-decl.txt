@@ -1,0 +1,20 @@
+% =========================================================
+% an-interface-decl test - Normal case
+interface tree
+ method int sum()
+ method bool equal(t : tree)
+
+class interior-node extends object implements tree
+ field tree left
+ field tree right
+ method void initialize(l : tree, r : tree)
+  begin
+   set left = l; set right = r
+  end
+  method tree getleft () left
+  method tree getright () right
+  method int sum () + (send left sum(), send right sum())
+
+% == 
+
+% =========================================================

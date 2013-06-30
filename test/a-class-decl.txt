@@ -1,0 +1,36 @@
+% =========================================================
+% a-class-decl test - Normal case
+class cl extends object
+ field int i
+ field int j
+
+ method void initialize (x: int)
+  begin
+   set i = x;
+   set j = -(0,x)
+  end
+
+ method void countup (d: int)
+  begin
+   set i = +(i,d);
+   set j = -(j,d)
+  end
+ 
+ method getstate () list(i,j)
+ let t1 = 0
+     t2 = 0
+     o1 = new cl(3)
+ in begin
+   set t1 = send o1 getstate();
+   send o1 countup(2);
+   set t2 = send ol getstate();
+   list(t1, t2)
+  end
+
+begin
+   set c1 = new cl(10);
+end
+
+% == 
+
+% =========================================================

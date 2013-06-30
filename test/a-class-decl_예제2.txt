@@ -1,0 +1,18 @@
+% =========================================================
+% a-class-decl test - Normal case
+class interior-node extends object
+ field left
+ field right
+ method initialize (l:int ,r:int)
+  begin
+   set left = l;
+   set right = r
+  end
+
+begin
+   set n1 = new interior-node(10, 20);
+end
+ 
+% ==
+
+% =========================================================
