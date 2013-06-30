@@ -1,6 +1,6 @@
 NAM++
 ======================================================
-Typed-object-oriented Language
+Typed-object-oriented Language by Racket(Scheme)
 If you want to contact us, please send email to sjnam07@gmail.com
 
 License
