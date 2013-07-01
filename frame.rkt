@@ -1,13 +1,12 @@
 #lang racket/gui
 
 (require wxme/image)
-(require 2htdp/image 2htdp/universe)
 (require "check.scm")
  
 ;창 프레임
 (define edit_frame (new frame% [label "[type-object-oriented] Edit"]
                                [width 800]
-                               [height 800]
+                               [height 600]
                                [x 100]
                                [y 100] ))
 (define figure_frame (new frame% [label "[type-object-oriented] Output"]
@@ -67,22 +66,19 @@
              [callback (lambda (button event)
                          ;;출력창에 결과 표시
                          (send figure_frame show #t)
-                         ;;이미지 초기화
-                         (init-canvas)
                          ;;코드 입력창에 입력한 것을 인터프리트 한다. - 이 때 결과는 image-canvas에 그려진다.
                          (send t save-file "code_temp.txt" 'text #t)
                          (runfile "code_temp.txt")
-(n_circle 40 100 100 "outline" "red")
-(n_line 50 30 100 100 "black"  )
-(n_triangle 40 60 80 100 100 "solid" "seagreen" )
-(n_rectangle 40 20  200 200  "solid" "blue")
-(n_polygon 70 5 400 400 "outline" "red"  )
-(n_text "[type-object-oriented]" 200 100 24 "cyan" )
-                         ;;이미지를 캔버스에 그린다.
+;;(n_circle 40 100 100 "outline" "red")
+;;(n_line 50 30 100 100 "black"  )
+;;(n_triangle 40 60 80 100 100 "solid" "seagreen" )
+;;(n_rectangle 40 20  200 200  "solid" "blue")
+;;(n_polygon 70 5 400 400 "outline" "red"  )
+;;(n_text "[type-object-oriented]" 200 100 24 "cyan" )
+                         ;;runfile에서 저장된 이미지를 이미지를 캔버스에 그린다.
                          (draw-canvas))])
 
-;빈 이미지 변수
-(define image-canvas (empty-scene 600 600))
+
 ;캔버스에 그릴 이미지를 불러올 변수
 (define canvas-bmp (make-object bitmap% 600 600))
 ;캔버스 변수
@@ -94,50 +90,7 @@
      [paint-callback (lambda (c dc)
                        (send dc draw-bitmap canvas-bmp 0 0))]))
 
-
-;;;;;;;;;;;그래픽 표현 함수 - 인터프리터에서 호출한다
-;;캔버스 초기화
-(define init-canvas (lambda ()
-                      (set! image-canvas (empty-scene 600 600))))
-
-;;그리기 함수들
-;;line 그리는 함수 
-(define n_line
-  (lambda(x y i j color)
-    (if (> (+ (* x x) (* y y)) (+ (* i i) (* j j)))
-        (set! image-canvas (place-image (line (- x i) (- y j) color) i j image-canvas))
-        (set! image-canvas (place-image (line (- i x) (- j y) color) x y image-canvas)))))
-
-;;circle 그리는 함수
-(define n_circle
-  (lambda (r i j ls color)
-    (set! image-canvas (place-image (circle r ls color) i j image-canvas))))
-
-;;triangle 그리는 함수
-(define n_triangle
-  (lambda (a b c i j ls color)
-    (set! image-canvas (place-image (triangle/sss a b c ls color) i j image-canvas))))
-
-;;rectangle 그리는 함수
-(define n_rectangle
-  (lambda (a b i j ls color)
-          (set! image-canvas (place-image (rectangle a b ls color) i j image-canvas))))
-
-;;polygon 그리는 함수 
-(define n_polygon
-  (lambda(r n i j ls color)
-    (set! image-canvas (place-image (regular-polygon r n ls color) i j image-canvas))))
-
-;;문자 
-(define n_text
-  (lambda (t i j size color)
-    (set! image-canvas (place-image (text t size color) i j image-canvas))))
-
-
-
 ;;화면에 출력하는 함수
 (define draw-canvas (lambda ()
-                      ;이미지를 파일에 저장
-                      (save-image image-canvas "img_temp.png" 600 600)
                       ;이미지를 bitmap% 객체에 불러오기
                       (send canvas-bmp load-file "img_temp.png" 'png)))
