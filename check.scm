@@ -20,6 +20,7 @@
             ;(display (format "**CODE**~n~a~n~n" string))
             (display (format "**TYPE**~n~a~n~n" (type->string (check string))))
             (display (format "**RESULT**~n~a~n~n" (expval->string (run (readfile file)))))
+            (display (format "**STORE**~n~a~n~n" (store->string-top the-store)))
             (newline)
             
             ;;그래픽 결과를 임시 파일에 저장 - 이것을 결과창에서 불러와서 화면을 그린다.
