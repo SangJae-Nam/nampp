@@ -1,0 +1,39 @@
+% =========================================================
+% demo - face
+
+begin
+	circle(100, 150, 150,"solid","burlywood");
+	rectangle(200, 60, 150,70,"solid", "black");
+
+	triangle(20,20,10,55, 110, "solid", "black");
+	triangle(20,20,10,65, 110, "solid", "black");
+	triangle(20,20,10,75, 110, "solid", "black");
+	triangle(20,20,10,85, 110, "solid", "black");
+	triangle(20,20,10,95, 110, "solid", "black");
+	triangle(20,20,10,105, 110, "solid", "black");
+	triangle(20,20,10,115, 110, "solid", "black");
+	triangle(20,20,10,125, 110, "solid", "black");
+	triangle(20,20,10,135, 110, "solid", "black");
+	triangle(20,20,10,145, 110, "solid", "black");
+	triangle(20,20,10,155, 110, "solid", "black");
+	triangle(20,20,10,165, 110, "solid", "black");
+	triangle(20,20,10,175, 110, "solid", "black");
+	triangle(20,20,10,185, 110, "solid", "black");
+	triangle(20,20,10,195, 110, "solid", "black");
+	triangle(20,20,10,205, 110, "solid", "black");
+	triangle(20,20,10,215, 110, "solid", "black");
+	triangle(20,20,10,225, 110, "solid", "black");
+	triangle(20,20,10,235, 110, "solid", "black");
+	triangle(20,20,10,245, 110, "solid", "black");
+	
+	circle(10, 190, 150,"solid","brown");
+	circle(10, 110, 150,"solid","brown");
+
+	circle(5, 160, 160,"solid","purple");
+
+	triangle(40,40,40,155, 230, "solid", "red")
+	
+	
+end
+% == 
+% =========================================================

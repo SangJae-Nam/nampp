@@ -17,7 +17,7 @@
             (init-canvas)
 
             ;;텍스트로 결과 표시
-            (display (format "**CODE**~n~a~n~n" string))
+            ;(display (format "**CODE**~n~a~n~n" string))
             (display (format "**TYPE**~n~a~n~n" (type->string (check string))))
             (display (format "**RESULT**~n~a~n~n" (expval->string (run (readfile file)))))
             (newline)
@@ -401,7 +401,6 @@
                  (letrec 
                      ((type-of-begins
                        (lambda (e1 es)
-                         (display "begin-exp")
                          (let ((v1 (type-of e1 tenv)))
                            (if (null? es)
                                v1
