@@ -14,9 +14,14 @@ class person extends object
 		age
 	method bool getMan()
 		man
+	method void setAge(a : int)
+		set age = a
 
-let o1 = new person()
-	in send o1 getAge()
+let o1 = new person() in
+	begin
+		send o1 setAge(19);
+		send o1 getAge()
+	end
 
-% == 26
+% == 19
 % =========================================================
