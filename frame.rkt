@@ -27,7 +27,8 @@
 (define m_new (new menu-item% [parent m_file] 
                                [label "new"]
                                [callback (lambda (button event) 
-                                                   (new keymap%))]))
+                                                   ;(new keymap%))]))
+                                                   (send t erase))]))
 (define m_save-as (new menu-item% [parent m_file] 
                                [label "save as"]
                                [callback (lambda (button event) 
@@ -47,7 +48,6 @@
 (append-editor-operation-menu-items m_edit #f)
 (append-editor-font-menu-items m_font)
 
-
 (define output_window (new message% [parent bottom_pane]
                                     [label ""]
                                     [min-width 600]
@@ -61,9 +61,11 @@
 (send edit_frame show #t)
 
 ;실행 버튼
-(new button% [parent edit_frame]
-             [label "run"]
-             [callback (lambda (button event)
+(define run_button 
+  (new button% 
+       [parent edit_frame]
+       [label "run"]
+       [callback (lambda (button event)
                          ;;출력창에 결과 표시
                          (send figure_frame show #t)
                          ;;코드 입력창에 입력한 것을 인터프리트 한다. - 이 때 결과는 image-canvas에 그려진다.
@@ -76,8 +78,7 @@
 ;;(n_polygon 70 5 400 400 "outline" "red"  )
 ;;(n_text "[type-object-oriented]" 200 100 24 "cyan" )
                          ;;runfile에서 저장된 이미지를 이미지를 캔버스에 그린다.
-                         (draw-canvas))])
-
+                         (draw-canvas))]))
 
 ;캔버스에 그릴 이미지를 불러올 변수
 (define canvas-bmp (make-object bitmap% 600 600))

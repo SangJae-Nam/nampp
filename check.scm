@@ -20,7 +20,7 @@
             ;(display (format "**CODE**~n~a~n~n" string))
             (display (format "**TYPE**~n~a~n~n" (type->string (check string))))
             (display (format "**RESULT**~n~a~n~n" (expval->string (run (readfile file)))))
-            (display (format "**STORE**~n~a~n~n" (store->string-top the-store)))
+            ;(display (format "**STORE**~n~a~n~n" (store->string-top the-store)))
             (newline)
             
             ;;그래픽 결과를 임시 파일에 저장 - 이것을 결과창에서 불러와서 화면을 그린다.
@@ -431,7 +431,6 @@
       (new-object-exp (class-name rands)
                       (let ((arg-types (types-of-exps rands tenv))
                             (c (lookup-static-class class-name)))
-                        ;(display "new-object-exp")
                         (cases static-class c
                           (an-interface (method-tenv)
                                         (report-cant-instantiate-interface class-name))
@@ -593,7 +592,7 @@
               id)))
       (if m m
           (eopl:error 'find-method 
-                      "unknown method ~s in class ~s"
+                      "Unknown method ~s in class ~s"
                       id class-name)))))
 
 (define report-cant-instantiate-interface
@@ -641,7 +640,7 @@
 (define report-rator-not-of-proc-type
   (lambda (external-form-rator-type exp)
     (eopl:error 'type-of-call
-                "rator ~s is not of proc-type ~s"
+                "Operator ~s is not of proc-type ~s"
                 exp external-form-rator-type)))
 
 (define report-wrong-number-of-arguments
@@ -743,13 +742,13 @@
 (define report-cant-implement-non-interface
   (lambda (c-name i-name)
     (eopl:error 'check-if-implements
-                "class ~s claims to implement non-interface ~s"
+                "Class ~s claims to implement non-interface ~s"
                 c-name i-name)))
 
 (define report-missing-method
   (lambda (c-name i-name i-m-name)
     (eopl:error 'check-if-implements
-                "class ~s claims to implement ~s, missing method ~s"
+                "Class ~s claims to implement ~s, missing method ~s"
                 c-name i-name i-m-name)))
 
 ;;;;;;;;;;;;;;;; types ;;;;;;;;;;;;;;;;
@@ -759,7 +758,7 @@
     (if (equal? t1 t2)
         #t
         (eopl:error 'type-of
-                    "Types didn't match: ~s != ~s in~%~s"
+                    "Types didn't match: Original type - ~s, Input type - ~s in~%~s"
                     (type-to-external-form t1)
                     (type-to-external-form t2)
                     exp))))
@@ -778,7 +777,7 @@
 (define report-subtype-failure
   (lambda (external-form-ty1 external-form-ty2 exp)
     (eopl:error 'check-is-subtype!
-                "~s is not a subtype of ~s in ~%~s"
+                "~s is not a subtype of ~s in~%~s"
                 external-form-ty1
                 external-form-ty2
                 exp)))
@@ -834,14 +833,14 @@
 (define report-bad-type-to-cast 
   (lambda (type exp)
     (eopl:error 'bad-type-to-case
-                "can't cast non-object; ~s had type ~s"
+                "Can't cast non-object; ~s had type ~s"
                 exp
                 (type-to-external-form type))))
 
 (define report-bad-type-to-instanceof
   (lambda (type exp)
     (eopl:error 'bad-type-to-case
-                "can't apply instanceof to non-object; ~s had type ~s"
+                "Can't apply instanceof to non-object; ~s had type ~s"
                 exp
                 (type-to-external-form type))))
 
@@ -1055,7 +1054,6 @@
 
 (define lookup-static-class
   (lambda (name)
-    ;(display "lookup-static-class")
     (let ((maybe-pair (assq name the-static-class-env)))
       (if maybe-pair 
           (cadr maybe-pair)
@@ -1067,7 +1065,7 @@
       (cond
         ((null? rest) #t)
         ((memv (car rest) (cdr rest))
-         (eopl:error 'check-no-dups! "duplicate found among ~s in class ~s" lst
+         (eopl:error 'check-no-dups! "Duplicate found among ~s in class ~s" lst
                      c-name))
         (else (loop (cdr rest)))))))
 
@@ -1097,7 +1095,7 @@
   (lambda (method-tenv class-name)
     (unless (maybe-find-method-type method-tenv 'initialize)
       (eopl:error 'check-for-initialize!
-                  "no initialize method in class ~s"
+                  "No initialize method in class ~s"
                   class-name))))
 
 
