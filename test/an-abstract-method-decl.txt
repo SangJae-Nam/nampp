@@ -9,14 +9,15 @@ class cl extends object implements inter
 
  method void initialize(x: int)
   begin
-   set i = x;
+   set i = x
   end
 
  method int sum(x: int)
   begin
-   set i = +(x,1);
+   set i = +(x,1)
   end
 
 % == 
 % =========================================================
+
 

@@ -271,7 +271,7 @@
     (expression ("/" "(" expression "," expression ")") div-exp)
     
     ;; Expression ::= %(Expression, Expression)
-    (expression ("%" "(" expression "," expression ")") mod-exp)
+    (expression ("mod" "(" expression "," expression ")") mod-exp)
     
     ;; Expression ::= list({Expression}*(,))                  
     (expression ("list" "("(arbno expression (arbno ",")) ")") list-exp)

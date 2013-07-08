@@ -28,9 +28,10 @@ class cl extends object
   end
 
 begin
-   set c1 = new cl(10);
+   set c1 = new cl(10)
 end
 
 % == 
 
 % =========================================================
+

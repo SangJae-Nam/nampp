@@ -1,8 +1,12 @@
 % =========================================================
-% begin-exp test - error case
+% begin-exp test - error case 
 
 begin
-	if zero?(500) then 10 else 20;
+	if zero?(500) 
+　　　　then 10 
+　　　　else 20;
 	+(10, 50)
 	%(400, 134)
 end
+
+% 室耕紬経

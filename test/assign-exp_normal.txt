@@ -3,4 +3,4 @@
 
 let v1 = "hello" in
 	set v1 = "test"
-v1
+

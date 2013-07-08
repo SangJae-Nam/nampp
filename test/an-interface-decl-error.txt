@@ -9,7 +9,8 @@ class interior-node extends object implements tree
  field tree right
  method void initialize(l : tree, r : tree)
   begin
-   set left = l; set right = r
+   set left = l; 
+   set right = r
   end
   method tree getleft () left
   method tree getright () right
@@ -17,3 +18,4 @@ class interior-node extends object implements tree
 
 % == 선언된 인터페이스 메소드 정의 안했을 때 오류 ??
 % =========================================================
+

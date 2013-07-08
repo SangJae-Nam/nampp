@@ -5,13 +5,14 @@ class cl extends object
 
  method void initialize(x: int)
   begin
-   set i = x;
+   set i = x
   end
 
  method void methodDecl1(x: int)
   begin
-   set i = -(x,1);
+   set i = -(x,1)
   end
 
 % ==
 % =========================================================
+

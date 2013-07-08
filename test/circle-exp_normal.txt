@@ -10,25 +10,25 @@ class circle extends object
 method void initialize(rr: int, ii: int, jj: int, outline: string, cc: string)
  begin
  set r = rr;
- set i = ii
- set j = jj
- set sline = outline
+ set i = ii;
+ set j = jj;
+ set sline = outline;
  set color = cc
  end
 method void setCircle(rr: int, ii: int, jj: int, outline: string, cc: string)
  begin
  set r = rr;
- set i = ii
- set j = jj
+ set i = ii;
+ set j = jj;
  set sline = outline
  end
  method void setColor(cc: string)
   begin
-   set color = cc;
+   set color = cc
   end
  method void setSline(outline: string)
   begin
-   set sline = outline;
+   set sline = outline
   end
  method void drawCircle()
   begin

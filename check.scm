@@ -104,6 +104,7 @@
         (let ((num1 (expval->num (value-of exp1 env)))
               (num2 (expval->num (value-of exp2 env))))
           (num-val (- num1 (* num2 (/ num1 num2))))))
+
 ;; 2013. 3. 28 용규 수정
 ;; list-exp의 interpreter
 ;; list-exp은 lst의 각각의 value들을 list로 만들어준다..
@@ -337,6 +338,27 @@
                   (int-type)))
       
       (sum-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (int-type)))
+      
+      (mul-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (int-type)))
+      
+      (div-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (int-type)))
+      
+      (mod-exp (exp1 exp2)
                (let ((type1 (type-of exp1 tenv))
                      (type2 (type-of exp2 tenv)))
                  (check-equal-type! type1 (int-type) exp1)

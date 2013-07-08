@@ -6,12 +6,12 @@ class cl extends object
 
  method void initialize(x: int)
   begin
-   set i = x;
+   set i = x
   end
 
  method void method1(x: int)
   begin
-   set i = +(x,1);
+   set i = +(x,1)
   end
 
  let c1 = new cl(10)
@@ -20,4 +20,5 @@ class cl extends object
 
 % == 생성된 객체명이 빠졌을 경우
 % =========================================================
+
 
