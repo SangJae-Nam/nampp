@@ -20,16 +20,16 @@ USAGE
 SOFTWARE REQUIREMENTS
    Racket v5.0.0 or later.
 
-AUTHOR
-   - YongGyu Kim : mixnumg@gmail.com
-   - DongWook Jung : jung4759@gmail.com
-   - SangJae Nam : sjnam07@gmail.com
-   - SeungJu Park : wkdql88@naver.com
-   - JaeHo Lim : ho8513@gmail.com
-   - MinSueob Jung : wjdalstjq12@gmail.com
+AUTHORS
+   - YongGyu Kim: mixnumg@gmail.com
+   - DongWook Jung: jung4759@gmail.com
+   - SangJae Nam: sjnam07@gmail.com
+   - SeungJu Park: wkdql88@naver.com
+   - JaeHo Lim: ho8513@gmail.com
+   - MinSueob Jung: wjdalstjq12@gmail.com
 
 PROJECT ADVISOR
-   - Prof. Dongha Shin : dshin@smu.ac.kr
+   - Prof. Dongha Shin: dshin@smu.ac.kr
 
 REFERENCES
    - Dariel P. Friedman and Mitchell Wand, Essentials of Programming Languages Third Edition, MIT Press

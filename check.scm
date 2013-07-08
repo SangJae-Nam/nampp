@@ -103,7 +103,7 @@
       (mod-exp (exp1 exp2)
         (let ((num1 (expval->num (value-of exp1 env)))
               (num2 (expval->num (value-of exp2 env))))
-          (num-val (- num1 (* num2 (/ num1 num2))))))
+          (num-val (remainder num1 num2))))
 
 ;; 2013. 3. 28 용규 수정
 ;; list-exp의 interpreter
