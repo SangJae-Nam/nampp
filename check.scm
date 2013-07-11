@@ -104,6 +104,12 @@
         (let ((num1 (expval->num (value-of exp1 env)))
               (num2 (expval->num (value-of exp2 env))))
           (num-val (remainder num1 num2))))
+      
+      (sleep-exp (exp1)
+                 (let ((time (expval->num (value-of exp1 env))))
+                   (if (> time 0)
+                       (begin (sleep time) (void-val))
+                       (eopl:error 'sleep-exp "TIME must be grater than 0"))))
 
 ;; 2013. 3. 28 용규 수정
 ;; list-exp의 interpreter
@@ -364,6 +370,11 @@
                  (check-equal-type! type1 (int-type) exp1)
                  (check-equal-type! type2 (int-type) exp2)
                  (int-type)))
+      
+      (sleep-exp (exp1)
+                 (let ((type1 (type-of exp1 tenv)))
+                   (check-equal-type! type1 (int-type) exp1)
+                   (void-type)))
       
       (zero?-exp (exp1)
                  (let ((type1 (type-of exp1 tenv)))

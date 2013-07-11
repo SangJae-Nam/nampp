@@ -96,6 +96,10 @@
 ;; Expression ::= list({Expression}*(,))                  
   (list-exp (exps (list-of expression?)))
   
+  ;;sleep-exp
+  ;;Expression ::= sleep(Expression)
+  (sleep-exp (exp1 expression?))
+  
 ;; lex-exp(vars exps body)의 cfg
 ;; Expression ::= let {Identifier = Expression}* in Expression  
   (let-exp (vars (list-of symbol?)) (exps (list-of expression?)) (body expression?))
@@ -276,6 +280,9 @@
     ;; Expression ::= list({Expression}*(,))                  
     (expression ("list" "("(arbno expression (arbno ",")) ")") list-exp)
     
+    ;; Expression :: sleep(Expression)
+    (expression ("sleep" "(" expression ")") sleep-exp)
+    
     ;; Expression ::= let {Identifier = Expression}* in Expression  
     (expression ("let" (arbno identifier "=" expression) "in" expression) let-exp)
     
@@ -424,6 +431,8 @@
 	;;; 용규 수정 ;;;
 	;;; (format "(~a)" ))
 	(string-append "list " "(" (rands-expression exps) ")"))
+      (sleep-exp (exp1)
+        (format "sleep(~a)" (exp->string exp1)))
 ;;class관련
       (new-object-exp (class-name rands)
         (string-append "new " (symbol->string class-name) "(" (rands-expression rands) ")"))

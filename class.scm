@@ -571,7 +571,8 @@
   (string-val (str string?))
   (proc-val (proc1 proc?))
   (obj-val (obj object?))
-  (list-val (lst (list-of expval?))))
+  (list-val (lst (list-of expval?)))
+  (void-val))
 
 (define-datatype proc proc?
   (procedure (vars (list-of symbol?)) (var-types (list-of type?))
@@ -646,6 +647,7 @@
 ;; list-val은 (list-of expval) 이므로 각각의 expval을 구해야 한다
       (list-val (lsts)
        (string-append "(" (list-of-expval->string lsts) ")"))       
+      (void-val () "")
       (else
         (eopl:error 'expval->string "arg=~a" ev)))))
 

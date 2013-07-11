@@ -1,3 +1,3 @@
 #lang racket
 
-(provide void)
+(provide void sleep void?)
