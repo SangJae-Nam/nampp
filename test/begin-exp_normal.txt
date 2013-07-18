@@ -4,5 +4,5 @@
 begin
 	if zero?(500) then 10 else 20;
 	+(10, 50);
-	%(400, 134)
+	mod(400, 134)
 end
