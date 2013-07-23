@@ -114,7 +114,7 @@
 
 ;; letrec-exp(p-result-types p-names b-varss b-var-typess p-bodies letrec-body)의 cfg
 ;; Expression ::= letrec{type Identifier ({Identifier : type}*(,)) = Expression}* in Expression  
-  (letrec-exp (p-result-types (list-of type?)) (p-names symbol?) (b-varss (list-of (list-of symbol?)))
+  (letrec-exp (p-result-types (list-of type?)) (p-names (list-of symbol?)) (b-varss (list-of (list-of symbol?)))
               (b-var-typess (list-of (list-of type?))) (p-bodies (list-of expression?)) 
               (letrec-body expression?))
 
@@ -140,6 +140,46 @@
 ;; instanceof-exp(exp name)의 cfg
 ;; Expression ::= instanceof Expression Identifier  
   (instanceof-exp (exp expression?) (name symbol?))
+  
+;; 크기 비교 expression
+;; 2013. 7. 23
+;; creator : 김용규 
+;; >, >=, <, <=, ==, != 에 대한 Expression 생성
+;; 비교 되는 expression들은 number라고 가정 => typecheck 시 number인지 확인 추가
+;; Expression ::= >(Expression, Expression)
+  (gt-exp (exp1 expression?) (exp2 expression?))
+
+;; Expression ::= >=(Expression, Expression)
+  (ge-exp (exp1 expression?) (exp2 expression?))
+
+;; Expression ::= <(Expression, Expression)
+  (lt-exp (exp1 expression?) (exp2 expression?))
+
+;; Expression ::= <=(Expression, Expression)
+  (le-exp (exp1 expression?) (exp2 expression?))
+
+;; Expression ::= ==(Expression, Expression)
+  (eq-exp (exp1 expression?) (exp2 expression?))
+
+;; Expression ::= !=(Expression, Expression)
+  (ne-exp (exp1 expression?) (exp2 expression?))
+  
+;; list의 값을 빼낼 수 있는 expression
+;; 2013. 7. 23
+;; creator : 김용규
+;; car, cdr에 대한 expression 생성
+;; Expression ::= car(Expression)
+  (car-exp (lst expression?))
+  
+;; Expression ::= cdr(Expression)
+  (cdr-exp (lst expression?))
+
+;; 두 list를 합치는 expression 생성
+;; 2013. 7. 23
+;; creator : 김용규
+;; append expression 생성
+;; Expression ::= append (exp1 exp2)
+  (append-exp (lst1 expression?) (lst2 expression?))  
   
 ;; line-exp
 ;; Expression ::= line(Expression, Expression, Expression, Expression, Expression)
@@ -314,6 +354,33 @@
     ;; Expression ::= instanceof Expression Identifier  
     (expression ("instanceof" expression identifier) instanceof-exp)
     
+    ;; Expression ::= >(Expression, Expression)
+    (expression (">" "(" expression "," expression ")") gt-exp)
+    
+    ;; Expression ::= >=(Expression, Expression)
+    (expression (">=" "(" expression "," expression ")") ge-exp)
+    
+    ;; Expression ::= <(Expression, Expression)
+    (expression ("<" "(" expression "," expression ")") lt-exp)
+    
+    ;; Expression ::= <=(Expression, Expression)
+    (expression ("<=" "(" expression "," expression ")") le-exp)
+    
+    ;; Expression ::= ==(Expression, Expression)
+    (expression ("==" "(" expression "," expression ")") eq-exp)
+    
+    ;; Expression ::= !=(Expression, Expression)
+    (expression ("!=" "(" expression "," expression ")") ne-exp)
+    
+    ;; Expresion ::= car(identifier)
+    (expression ("car" "(" expression ")") car-exp)
+    
+     ;; Expresion ::= cdr(identifier)
+    (expression ("cdr" "(" expression ")") cdr-exp)
+    
+     ;; Expresion ::= append(Expression Expression)
+    (expression ("append" "(" expression expression ")") append-exp)
+    
     ;;여기서부터 그리기 exp
     
     ;; Expression ::= line(Expression, Expression, Expression, Expression, Expression)
@@ -446,6 +513,27 @@
         (string-append "instanceof " (exp->string exp) (symbol->string name)))
       (cast-exp (obj-exp c-name)
         (string-append "cast " (exp->string obj-exp) (symbol->string c-name)))
+;; operation 관련
+      (gt-exp (exp1 exp2)
+       (format ">(~a,~a)" (exp->string exp1) (exp->string exp2)))
+      (ge-exp (exp1 exp2)
+       (format ">=(~a,~a)" (exp->string exp1) (exp->string exp2)))
+      (lt-exp (exp1 exp2)
+       (format "<(~a,~a)" (exp->string exp1) (exp->string exp2)))
+      (le-exp (exp1 exp2)
+       (format "<=(~a,~a)" (exp->string exp1) (exp->string exp2)))
+      (eq-exp (exp1 exp2)
+       (format "==(~a,~a)" (exp->string exp1) (exp->string exp2)))
+      (ne-exp (exp1 exp2)
+       (format "!=(~a,~a)" (exp->string exp1) (exp->string exp2)))
+;; car, cdr expresion      
+      (car-exp (lst)
+        (format "car (~a)" lst))
+      (cdr-exp (lst)
+        (format "cdr (~a)" lst))
+;; append expression
+      (append-exp (lst1 lst2)
+         (format "append (~a ~a)" (exp->string lst1) (exp->string lst2)))      
       ;;그리기 관련
       (line-exp (x y i j color)
         (string-append "line(" x "," y "," i "," j "," color ")"))

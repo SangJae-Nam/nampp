@@ -575,7 +575,7 @@
   (void-val))
 
 (define-datatype proc proc?
-  (procedure (vars (list-of symbol?)) (var-types (list-of type?))
+  (procedure (vars (list-of symbol?))
              (body expression?) (saved-env environment?)))
 
 ;; ======================================================================
@@ -627,9 +627,10 @@
       (string-val (str) str)
       (proc-val (proc1)
         (cases proc proc1
-          (procedure (vars v-types body saved-env)
+          (procedure (vars body saved-env)
             ;(format "proc(~a)~a~a" vars (exp->string body) (env->string-top saved-env)))
-            (string-append "proc" "(" (arg:type->string vars v-types) ")" (exp->string body) (env->string-top saved-env)))
+            ;;(string-append "proc" "(" (arg:type->string vars v-types) ")" (exp->string body) (env->string-top saved-env)))
+            (string-append "proc"))         
           (else
             (eopl:error 'expval->string "proc-val arg=~a" proc1))))
 

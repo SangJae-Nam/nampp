@@ -126,7 +126,7 @@
               (args (value-of-exps rands env)))
           (apply-procedure proc args)))
       (proc-exp (vars var-types body)
-        (proc-val (procedure vars var-types body env)))
+        (proc-val (procedure vars body env)))
       (letrec-exp (p-result-type p-names b-varss b-var-typess p-bodies letrec-body)
         (value-of letrec-body
           (extend-env-rec p-result-type p-names b-varss b-var-typess p-bodies env)))
@@ -172,7 +172,87 @@
           (if (is-subclass? (object->class-name (expval->obj obj)) c-name)
             (bool-val #t)
             (bool-val #f))))
+;; 새로 추가해주는 크기 비교 operation
+;; 2013. 7. 23
+;; creator : 김용규 
+;; >, >=, <, <=, ==, != 에 대한 Expression 생성
+;; gt-exp(exp1 exp2) 
+;; exp1의 값이 exp2보다 크면 true, 그렇지 않으면 false      
+      (gt-exp (exp1 exp2)
+        (let ((num1 (expval->num (value-of exp1 env)))
+              (num2 (expval->num (value-of exp2 env))))
+          (if (> num1 num2)
+              (bool-val #t)
+              (bool-val #f))))
+
+;; ge-exp(exp1 exp2) 
+;; exp1의 값이 exp2보다 크거나 같으면 true, 그렇지 않으면 false
+      (ge-exp (exp1 exp2)
+        (let ((num1 (expval->num (value-of exp1 env)))
+              (num2 (expval->num (value-of exp2 env))))
+          (if (>= num1 num2)
+              (bool-val #t)
+              (bool-val #f))))
       
+;; lt-exp(exp1 exp2) 
+;; exp1의 값이 exp2보다 작으면 true, 그렇지 않으면 false
+      (lt-exp (exp1 exp2)
+        (let ((num1 (expval->num (value-of exp1 env)))
+              (num2 (expval->num (value-of exp2 env))))
+          (if (< num1 num2)
+              (bool-val #t)
+              (bool-val #f))))
+      
+;; le-exp(exp1 exp2) 
+;; exp1의 값이 exp2보다 작거나 같으면 true, 그렇지 않으면 false
+      (le-exp (exp1 exp2)
+        (let ((num1 (expval->num (value-of exp1 env)))
+              (num2 (expval->num (value-of exp2 env))))
+          (if (<= num1 num2)
+              (bool-val #t)
+              (bool-val #f))))
+
+;; eq-exp(exp1 exp2) 
+;; exp1의 값이 exp2와 같으면 true, 그렇지 않으면 false
+      (eq-exp (exp1 exp2)
+        (let ((num1 (expval->num (value-of exp1 env)))
+              (num2 (expval->num (value-of exp2 env))))
+          (if (= num1 num2)
+              (bool-val #t)
+              (bool-val #f))))
+      
+;; ne-exp(exp1 exp2) 
+;; exp1의 값이 exp2와 같지 않으면 true, 그렇지 않으면 false
+      (ne-exp (exp1 exp2)
+        (let ((num1 (expval->num (value-of exp1 env)))
+              (num2 (expval->num (value-of exp2 env))))
+          (if (not (= num1 num2))
+              (bool-val #t)
+              (bool-val #f))))
+      
+;; list의 값을 빼낼 수 있는 expression
+;; 2013. 7. 23
+;; creator : 김용규
+;; car, cdr에 대한 expression 생성
+;; Expression ::= car (expression)
+      (car-exp (lst)
+        (let ((list (expval->list (value-of lst env))))
+          (car list)))
+      
+;; Expression ::= cdr (expression)
+      (cdr-exp (lst)
+        (let ((list (expval->list (value-of lst env))))
+          (list-val (cdr list))))
+
+;; 두 list를 합치는 expression 생성
+;; 2013. 7. 23
+;; creator : 김용규
+;; append expression 생성
+;; Expression ::= append (exp1 exp2)
+      (append-exp (exp1 exp2)
+        (let ((list1 (expval->list (value-of exp1 env)))
+              (list2 (expval->list (value-of exp2 env))))
+          (list-val (append list1 list2))))      
       ;;그리기 함수
       (line-exp (x y i j color)
          (let ((line_x (expval->num (value-of x env)))
@@ -239,7 +319,7 @@
 (define apply-procedure
   (lambda (proc1 vals)
     (cases proc proc1
-      (procedure (vars var-types body saved-env)
+      (procedure (vars body saved-env)
         (value-of body (extend-env* vars (value-of-refs vals) saved-env)))
       (else
         (eopl:error 'apply-procedure "arg=~a" proc1)))))
@@ -371,6 +451,49 @@
                  (check-equal-type! type2 (int-type) exp2)
                  (int-type)))
       
+       (gt-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (bool-type)))
+      
+      (ge-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (bool-type)))
+      
+      (lt-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (bool-type)))
+      
+      (le-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (bool-type)))
+      
+      (eq-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (bool-type)))
+      
+      (ne-exp (exp1 exp2)
+               (let ((type1 (type-of exp1 tenv))
+                     (type2 (type-of exp2 tenv)))
+                 (check-equal-type! type1 (int-type) exp1)
+                 (check-equal-type! type2 (int-type) exp2)
+                 (bool-type)))
+      
+      
       (sleep-exp (exp1)
                  (let ((type1 (type-of exp1 tenv)))
                    (check-equal-type! type1 (int-type) exp1)
@@ -458,6 +581,24 @@
                       exp))
                    (cdr exps))
                   (list-type type-of-car)))
+
+;; car, cdr append type check      
+      (car-exp (exp)
+        (let ((exp-type (type-of exp tenv)))
+          (check-equal-type! exp-type (list-type (int-type)) exp)
+          exp-type))
+                    
+      (cdr-exp (exp)
+        (let ((exp-type (type-of exp tenv)))
+          (check-equal-type! exp-type (list-type (int-type)) exp)
+          exp-type))
+      
+      (append-exp (exp1 exp2)
+        (let ((exp1-type (type-of exp1 tenv))
+              (exp2-type (type-of exp2 tenv)))
+          (check-equal-type! exp1-type (list-type (int-type)) exp1)
+          (check-equal-type! exp2-type (list-type (int-type)) exp2)
+          exp1-type))      
       
       ;; object stuff begins here
       
