@@ -1,8 +1,7 @@
 % =========================================================
-% textout-exp  test - Normal case
-% 
+% rectangle-exp  test - Error case - outline_solid ¿À·ù
 
-text-out("Typed-Object-oriented Language", 100, 100, 20, 255, 255, 0)
+rectangle(100, 200, 300, 300, +(0, 1), 255, 0, 255)
 
 % == 
 % =========================================================

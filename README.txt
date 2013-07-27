@@ -10,7 +10,7 @@ USAGE
      2) Click "Racket"->"Make executable file"
 
    RUN NAM++ at Racket:
-     1) Open "frame.rkt" by Racket
+     1) Open "check.rkt" by Racket
      2) Click "RUN"
 
    TEST FILES:

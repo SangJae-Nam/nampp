@@ -1,5 +1,6 @@
-#lang eopl
+#lang racket
 
+(require eopl)
 (require "format.scm")
 (provide (all-defined-out))
 ;; ======================================================================
@@ -183,11 +184,16 @@
   
 ;; line-exp
 ;; Expression ::= line(Expression, Expression, Expression, Expression, Expression)
-  (line-exp (x expression?) (y expression?) (i expression?) (j expression?) (color expression?))
+  (line-exp (x expression?) (y expression?)
+            (i expression?) (j expression?)
+            (r expression?) (g expression?) (b expression?))
   
 ;; circle-exp
 ;; Expression ::= circle(Expression, Expression, Expression, Expression, Expression)
-  (circle-exp (r expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?)) 
+  (circle-exp (radius expression?)
+              (i expression?) (j expression?)
+              (outline_solid number?)
+              (r expression?) (g expression?) (b expression?)) 
   
   ;; triangle-exp
   ;; Expression ::= triangle(Expression, Expression, Expression, Expression, Expression, Expresion, Expression)
@@ -195,7 +201,9 @@
   
   ;; rectangle-exp
   ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expresion)
-  (rectangle-exp (a expression?) (b expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?))
+  (rectangle-exp (x expression?) (y expression?) (i expression?) (j expression?)
+                 (outline_solid number?)
+                 (r expression?) (g expression?) (b expression?))
   
   ;; polygon-exp
   ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expresion)
@@ -203,7 +211,8 @@
   
   ;; textout-exp
   ;; Expression ::= text-out(Expression, Expression, Expression, Expression, Expression)
-  (textout-exp (text expression?) (i expression?) (j expression?) (size expression?) (color expression?))
+  (textout-exp (text expression?) (i expression?) (j expression?) (size expression?)
+               (r expression?) (g expression?) (b expression?))
   )
 ;; ======================================================================
 
@@ -383,23 +392,23 @@
     
     ;;여기서부터 그리기 exp
     
-    ;; Expression ::= line(Expression, Expression, Expression, Expression, Expression)
-    (expression ("line" "(" expression "," expression "," expression "," expression "," expression ")") line-exp)
+    ;; Expression ::= line(x, y, i, j, r, g, b)
+    (expression ("line" "(" expression "," expression "," expression "," expression "," expression "," expression "," expression ")") line-exp)
    
-    ;; Expression ::= circle(Expression, Expression, Expression, Expression, Expression)
-    (expression ("circle" "(" expression "," expression "," expression "," expression "," expression ")") circle-exp)
+    ;; Expression ::= circle(r, i, j, out_solid, r, g, b)
+    (expression ("circle" "(" expression "," expression "," expression "," number "," expression "," expression "," expression ")") circle-exp)
     
     ;; Expression ::= triangle(Expression, Expression, Expression, Expression, Expression, Expression, Expression)
     (expression ("triangle" "(" expression "," expression "," expression "," expression "," expression "," expression "," expression ")") triangle-exp)
     
-    ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expression)
-    (expression ("rectangle" "(" expression "," expression "," expression "," expression "," expression "," expression ")") rectangle-exp)
+    ;; Expression ::= rectangle(a, b, i, j, out_solid, r, g, b)
+    (expression ("rectangle" "(" expression "," expression "," expression "," expression "," number "," expression "," expression "," expression ")") rectangle-exp)
     
     ;; Expression ::= regular-polygon(Expression, Expression, Expression, Expression, Expression, Expression)
     (expression ("regular-polygon" "(" expression "," expression "," expression "," expression "," expression "," expression ")") polygon-exp)
     
-    ;; Expression ::= text-out(Expression, Expression, Expression, Expression, Expression)
-    (expression ("text-out" "(" expression "," expression "," expression "," expression "," expression ")") textout-exp)
+    ;; Expression ::= text-out(text, i, j, size, r, g, b)
+    (expression ("text-out" "(" expression "," expression "," expression "," expression "," expression "," expression "," expression ")") textout-exp)
     
     ;; type ::= int
     (type ("int") int-type)
@@ -535,18 +544,18 @@
       (append-exp (lst1 lst2)
          (format "append (~a ~a)" (exp->string lst1) (exp->string lst2)))      
       ;;그리기 관련
-      (line-exp (x y i j color)
-        (string-append "line(" x "," y "," i "," j "," color ")"))
-      (circle-exp (r i j outline_solid color)
-        (string-append "circle(" r "," i "," j "," outline_solid "," color ")"))
+      (line-exp (x y i j r g b)
+        (string-append "line(" x "," y "," i "," j "," r "," g "," b ")"))
+      (circle-exp (radius i j outline_solid r g b)
+        (string-append "circle(" radius "," i "," j "," outline_solid "," r "," g "," b ")"))
       (triangle-exp (a b c i j outline_solid color)
         (string-append "triangle(" a "," b "," c "," i "," j "," outline_solid "," color ")"))
-      (rectangle-exp (a b i j outline_solid color)
-        (string-append "rectangle(" a "," b "," i "," j "," outline_solid "," color ")"))
+      (rectangle-exp (x y i j outline_solid r g b)
+        (string-append "rectangle(" x "," y "," i "," j "," outline_solid "," r "," g "," b ")"))
       (polygon-exp (r n i j outline_solid color)
         (string-append "regular-polygon(" r "," n "," i "," j "," outline_solid "," color ")"))
-      (textout-exp (text i j size color)
-        (string-append "text-out(" text "," i "," j "," size "," color ")"))
+      (textout-exp (text i j size r g b)
+        (string-append "text-out(" text "," i "," j "," size "," r "," g "," b ")"))
       (else
         (eopl:error 'exp->string "arg=~a" exp)))))
 ;; ======================================================================

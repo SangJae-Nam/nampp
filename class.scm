@@ -1,5 +1,6 @@
-#lang eopl
+#lang racket
 
+(require eopl)
 (require "parse.scm" "store.scm" "format.scm")
 
 (provide (all-defined-out))
@@ -9,7 +10,7 @@
 ; class field-types를 넣어줌. interface를 저장할 수 있는 i-class를 만들어줌.
 (define-datatype class class?
   (a-class
-    (super-name (maybe symbol?))
+    (super-name (maybe__ symbol?))
     (interface-names (list-of symbol?))
     (field-types (list-of type?))
     (field-names (list-of symbol?))
@@ -19,8 +20,8 @@
 
 
 
-;; object의 super-name을 #f로 표현하기 때문에 함수 maybe는 pred가 #f 혹은 symbol이면 #t를 리턴함
-(define maybe
+;; object의 super-name을 #f로 표현하기 때문에 함수 maybe__는 pred가 #f 혹은 symbol이면 #t를 리턴함
+(define maybe__
   (lambda (pred)
     (lambda (v)
       (or (not v) (pred v)))))
@@ -75,11 +76,11 @@
         (string-append (symbol->string (car list-symbol)) " " (list-of-symbols->string (cdr list-symbol)))))))
    
 
-;; super-name type이 (maybe symbol?) 이므로 맞춰서 변환해야 한다.
+;; super-name type이 (maybe__ symbol?) 이므로 맞춰서 변환해야 한다.
 ;; 만약 최상위 object라면 #f를 반환함
 (define s-name->string
   (lambda (s-name)
-    (if ((maybe symbol?) s-name)
+    (if ((maybe__ symbol?) s-name)
       (if (eqv? s-name #f)
         "#f"
         (symbol->string s-name))

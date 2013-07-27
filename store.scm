@@ -1,5 +1,6 @@
-#lang eopl
+#lang racket
 
+(require eopl)
 (provide the-store empty-store get-store initialize-store! reference? newref deref setref! refs->string)
 ;; ----------------------------------------------------------------------
 

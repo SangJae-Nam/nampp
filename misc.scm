@@ -1,5 +1,6 @@
-#lang eopl
+#lang racket
 
+(require eopl)
 (require "parse.scm" "class.scm" "store.scm")
 (provide readfile trace-run-enter trace-class trace-run-exit trace-run-spaces)
 

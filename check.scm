@@ -1,11 +1,140 @@
-#lang eopl
+#lang racket
 
 (define trace-flag #f)
 (define trace-no-of-spaces 0)
 
-(require "parse.scm" "class.scm" "misc.scm" "store.scm" "format.scm" "racket_provide.rkt" "draw-image.rkt")
+(require "parse.scm" "class.scm" "misc.scm" "store.scm" "format.scm" "racket_provide.rkt")
+(require racket/gui/base)
+(require eopl)
 ;; ======================================================================
 
+;; ======================================================================
+;; Graphics
+;창 프레임
+(define edit_frame (new frame% [label "[type-object-oriented] Edit"]
+                               [width 800]
+                               [height 600]))
+(define figure_frame (new frame% [label "[type-object-oriented] Output"]
+                                 [width 600]
+                                 [height 600]))
+(define bottom_pane (new vertical-pane%  [parent edit_frame]))
+(define top_pane (new vertical-pane%  [parent bottom_pane]))
+
+;메뉴를 만들어 준다
+(define menu_bar (new menu-bar% [parent edit_frame]))
+
+;file 메뉴 
+(define m_file (new menu% [label "File"] [parent menu_bar]))
+(define m_new (new menu-item% [parent m_file] 
+                               [label "new"]
+                               [callback (lambda (button event) 
+                                                   ;(new keymap%))]))
+                                                   (send t erase))]))
+(define m_save-as (new menu-item% [parent m_file] 
+                               [label "save as"]
+                               [callback (lambda (button event) 
+                                                   (send t save-file "" 'text #t))]))
+(define m_load (new menu-item% [parent m_file] 
+                               [label "load"]
+                               [callback (lambda (button event) 
+                                                   (send t load-file "" 'text #t))]))
+(define m_exit (new menu-item% [parent m_file] 
+                               [label "exit"]
+                               [callback (lambda (button event) 
+                                               (exit))]))
+;edit 메뉴 
+(define m_edit (new menu% [label "Edit"] [parent menu_bar]))
+;font 메뉴 
+(define m_font (new menu% [label "Font"] [parent menu_bar]))
+(append-editor-operation-menu-items m_edit #f)
+(append-editor-font-menu-items m_font)
+
+(define output_window (new message% [parent bottom_pane]
+                                    [label ""]
+                                    [min-width 600]
+                                    {min-height 100}))
+
+(define d (new editor-canvas% [parent top_pane]))
+(define t (new text%))
+(send d set-editor t)
+
+;창 전체를 보일 수 있게 해준다 
+(send edit_frame show #t)
+
+;실행 버튼
+(define run_button 
+  (new button% 
+       [parent edit_frame]
+       [label "run"]
+       [callback (lambda (button event)
+                   ;;출력창에 결과 표시
+                   (send figure_frame show #t)
+                   (sleep/yield 0);;화면에 표시하기 위해 필요
+                   (send output_dc clear);;화면을 지운다.
+                         
+                   ;;코드 입력창에 입력한 것을 인터프리트 한다. - 이 때 결과는 image-canvas에 그려진다.
+                   (send t save-file "code_temp.txt" 'text #t)
+                   (runfile "code_temp.txt")
+                   )]))
+
+;캔버스 변수
+(define canvas (new canvas% [parent figure_frame]
+     [min-width 600]
+     [min-height 600]
+     [label "canvas"]
+     ))
+; Get the canvas's drawing context
+(define output_dc (send canvas get-dc))
+
+;;그리기 함수
+(define n_line (lambda (x1 y1 x2 y2 r g b)
+                 ;;brush 설정
+                 (send output_dc set-pen (make-object color% r g b) 5 'solid)
+                 ;;그리기
+                 (send output_dc draw-line x1 y1 x2 y2)))
+
+(define n_circle (lambda (x1 y1 radius brush r g b)
+                 ;;pen, brush 설정
+                 (cond
+                   [(= brush 0)
+                    (send output_dc set-pen (make-object color% r g b) 5 'solid)
+                    (send output_dc set-brush (make-object color% r g b) 'solid)]
+                   [(= brush 1)
+                    (send output_dc set-pen (make-object color% r g b) 5 'solid)
+                    (send output_dc set-brush (make-object color% r g b) 'transparent)]
+                   )
+                 ;;그리기
+                 (send output_dc draw-ellipse x1 y1 radius radius)))
+
+(define n_rectangle (lambda (x1 y1 x2 y2 brush r g b)
+                 ;;pen, brush 설정
+                 (cond
+                   [(= brush 0)
+                    (send output_dc set-pen (make-object color% r g b) 5 'solid)
+                    (send output_dc set-brush (make-object color% r g b) 'solid)]
+                   [(= brush 1)
+                    (send output_dc set-pen (make-object color% r g b) 5 'solid)
+                    (send output_dc set-brush (make-object color% r g b) 'transparent)]
+                   )
+                 ;;그리기
+                 (send output_dc draw-rectangle x1 y1 x2 y2)))
+
+(define n_text (lambda (t x y size r g b)
+                 ;;글자색
+                 (send output_dc set-text-foreground (make-object color% r g b))
+                 ;;글자 크기
+                 (send output_dc set-font (make-object font% size 'default))
+                 ;;그리기
+                 (send output_dc draw-text t x y)))
+
+
+;;string-exp에서 양쪽 끝의 "을 지워준다. - NAM++의 string-exp는 양쪽 끝에 "가 존재하기 때문에 그리기함수에서는 지워줘야 한다.
+(define remove-dquote
+  (lambda (str)
+    (string-trim str "\"")))
+
+;; ======================================================================
+;; Evaluator
 (define runfile
   (lambda (file)
     (let ((string (readfile file)))
@@ -13,18 +142,12 @@
       (if (string=? string "")
           (void)
           (begin
-            ;;그래픽으로 결과를 표시하기 위한 준비(결과는 (run (..)에서 표시한다.)
-            (init-canvas)
-
             ;;텍스트로 결과 표시
             ;(display (format "**CODE**~n~a~n~n" string))
             (display (format "**TYPE**~n~a~n~n" (type->string (check string))))
             (display (format "**RESULT**~n~a~n~n" (expval->string (run (readfile file)))))
             ;(display (format "**STORE**~n~a~n~n" (store->string-top the-store)))
             (newline)
-            
-            ;;그래픽 결과를 임시 파일에 저장 - 이것을 결과창에서 불러와서 화면을 그린다.
-            (save-image-canvas)
             )))))
 
 (define run
@@ -108,7 +231,9 @@
       (sleep-exp (exp1)
                  (let ((time (expval->num (value-of exp1 env))))
                    (if (> time 0)
-                       (begin (sleep time) (void-val))
+                       (begin
+                         (sleep/yield time)
+                         (void-val))
                        (eopl:error 'sleep-exp "TIME must be grater than 0"))))
 
 ;; 2013. 3. 28 용규 수정
@@ -254,22 +379,25 @@
               (list2 (expval->list (value-of exp2 env))))
           (list-val (append list1 list2))))      
       ;;그리기 함수
-      (line-exp (x y i j color)
+      (line-exp (x y i j r g b)
          (let ((line_x (expval->num (value-of x env)))
               (line_y (expval->num (value-of y env)))
               (line_i (expval->num (value-of i env)))
               (line_j (expval->num (value-of j env)))
-              (line_color (expval->string_ (value-of color env))))
-           (n_line line_x line_y line_i line_j (remove-dquote line_color))
+              (line_r (expval->num (value-of r env)))
+              (line_g (expval->num (value-of g env)))
+              (line_b (expval->num (value-of b env))))
+           (n_line line_x line_y line_i line_j line_r line_g line_b)
            (bool-val #t)))
       
-      (circle-exp (r i j outline_solid color)
-         (let ((line_r (expval->num (value-of r env)))
+      (circle-exp (radius i j outline_solid r g b)
+         (let ((radius (expval->num (value-of radius env)))
               (line_i (expval->num (value-of i env)))
               (line_j (expval->num (value-of j env)))
-              (outline_solid_ (expval->string_ (value-of outline_solid env)))
-              (line_color (expval->string_ (value-of color env))))
-           (n_circle line_r line_i line_j (remove-dquote outline_solid_) (remove-dquote line_color))
+              (line_r (expval->num (value-of r env)))
+              (line_g (expval->num (value-of g env)))
+              (line_b (expval->num (value-of b env))))
+           (n_circle line_i line_j radius outline_solid line_r line_g line_b)
            (bool-val #t)))
       
       (triangle-exp (a b c i j outline_solid color)
@@ -280,17 +408,18 @@
               (point_j (expval->num (value-of j env)))
               (outline_solid_ (expval->string_ (value-of outline_solid env)))
               (line_color (expval->string_ (value-of color env))))
-           (n_triangle side_a side_b side_c point_i point_j (remove-dquote outline_solid_) (remove-dquote line_color))
+           ;(n_triangle side_a side_b side_c point_i point_j (remove-dquote outline_solid_) (remove-dquote line_color))
            (bool-val #t)))
       
-      (rectangle-exp (a b i j outline_solid color)
-         (let ((side_a (expval->num (value-of a env)))
-              (side_b (expval->num (value-of b env)))
+      (rectangle-exp (x y i j outline_solid r g b)
+         (let ((side_x (expval->num (value-of x env)))
+              (side_y (expval->num (value-of y env)))
               (point_i (expval->num (value-of i env)))
               (point_j (expval->num (value-of j env)))
-              (outline_solid_ (expval->string_ (value-of outline_solid env)))
-              (line_color (expval->string_ (value-of color env))))
-           (n_rectangle side_a side_b point_i point_j (remove-dquote outline_solid_) (remove-dquote line_color))
+              (color_r (expval->num (value-of r env)))
+              (color_g (expval->num (value-of g env)))
+              (color_b (expval->num (value-of b env))))
+           (n_rectangle side_x side_y point_i point_j outline_solid color_r color_g color_b)
            (bool-val #t)))
       
       (polygon-exp (r n i j outline_solid color)
@@ -300,16 +429,18 @@
               (point_j (expval->num (value-of j env)))
               (outline_solid_ (expval->string_ (value-of outline_solid env)))
               (line_color (expval->string_ (value-of color env))))
-           (n_polygon size number point_i point_j (remove-dquote outline_solid_) (remove-dquote line_color))
+           ;(n_polygon size number point_i point_j (remove-dquote outline_solid_) (remove-dquote line_color))
            (bool-val #t)))
       
-      (textout-exp (text i j size color)
+      (textout-exp (text i j size r g b)
          (let ((text_ (expval->string_ (value-of text env)))
               (point_i (expval->num (value-of i env)))
               (point_j (expval->num (value-of j env)))
               (size_ (expval->num (value-of size env)))
-              (line_color (expval->string_ (value-of color env))))
-           (n_text (remove-dquote text_) point_i point_j size_ (remove-dquote line_color))
+              (color_r (expval->num (value-of r env)))
+              (color_g (expval->num (value-of g env)))
+              (color_b (expval->num (value-of b env))))
+           (n_text (remove-dquote text_) point_i point_j size_ color_r color_g color_b)
            (bool-val #t)))
          
        (else
@@ -670,30 +801,36 @@
                             (report-bad-type-to-instanceof obj-type exp))))
       
       ;;그리기
-      (line-exp (x y i j color)
+      (line-exp (x y i j r g b)
                 (let ((type_x (type-of x tenv))
                       (type_y (type-of y tenv))
                       (type_i (type-of i tenv))
                       (type_j (type-of j tenv))
-                      (type_color (type-of color tenv)))
+                      (type_r (type-of r tenv))
+                      (type_g (type-of g tenv))
+                      (type_b (type-of b tenv)))
                   (check-equal-type! type_x (int-type) type_x)
                   (check-equal-type! type_y (int-type) type_y)
                   (check-equal-type! type_i (int-type) type_i)
                   (check-equal-type! type_j (int-type) type_j)
-                  (check-equal-type! type_color (string-type) type_color)
+                  (check-equal-type! type_r (int-type) type_r)
+                  (check-equal-type! type_g (int-type) type_g)
+                  (check-equal-type! type_b (int-type) type_b)
                   (bool-type)))
       
-      (circle-exp (r i j outline_solid color)
-                (let ((type_r (type-of r tenv))
+      (circle-exp (radius i j outline_solid r g b)
+                (let ((type_radius (type-of radius tenv))
                       (type_i (type-of i tenv))
                       (type_j (type-of j tenv))
-                      (type_line_solid (type-of outline_solid tenv))
-                      (type_color (type-of color tenv)))
-                  (check-equal-type! type_r (int-type) type_r)
+                      (type_r (type-of r tenv))
+                      (type_g (type-of g tenv))
+                      (type_b (type-of b tenv)))
+                  (check-equal-type! type_radius (int-type) type_radius)
                   (check-equal-type! type_i (int-type) type_i)
                   (check-equal-type! type_j (int-type) type_j)
-                  (check-equal-type! type_line_solid (string-type) type_line_solid)
-                  (check-equal-type! type_color (string-type) type_color)
+                  (check-equal-type! type_r (int-type) type_r)
+                  (check-equal-type! type_g (int-type) type_g)
+                  (check-equal-type! type_b (int-type) type_b)
                   (bool-type)))
       
       (triangle-exp (a b c i j outline_solid color)
@@ -713,19 +850,21 @@
                   (check-equal-type! type_color (string-type) type_color)
                   (bool-type)))
       
-      (rectangle-exp (a b i j outline_solid color)
-                (let ((type_a (type-of a tenv))
-                      (type_b (type-of b tenv))
+      (rectangle-exp (x y i j outline_solid r g b)
+                (let ((type_x (type-of x tenv))
+                      (type_y (type-of y tenv))
                       (type_i (type-of i tenv))
-                      (type_j (type-of j tenv))
-                      (type_line_solid (type-of outline_solid tenv))
-                      (type_color (type-of color tenv)))
-                  (check-equal-type! type_a (int-type) type_a)
-                  (check-equal-type! type_b (int-type) type_b)
+                      (type_j (type-of j tenv))                      
+                      (type_r (type-of r tenv))
+                      (type_g (type-of g tenv))
+                      (type_b (type-of b tenv)))
+                  (check-equal-type! type_x (int-type) type_x)
+                  (check-equal-type! type_y (int-type) type_y)
                   (check-equal-type! type_i (int-type) type_i)
                   (check-equal-type! type_j (int-type) type_j)
-                  (check-equal-type! type_line_solid (string-type) type_line_solid)
-                  (check-equal-type! type_color (string-type) type_color)
+                  (check-equal-type! type_r (int-type) type_r)
+                  (check-equal-type! type_g (int-type) type_g)
+                  (check-equal-type! type_b (int-type) type_b)
                   (bool-type)))
       
       (polygon-exp (r n i j outline_solid color)
@@ -743,17 +882,21 @@
                   (check-equal-type! type_color (string-type) type_color)
                   (bool-type)))
       
-      (textout-exp (text i j size color)
+      (textout-exp (text i j size r g b)
                 (let ((type_size (type-of size tenv))
                       (type_i (type-of i tenv))
                       (type_j (type-of j tenv))
                       (type_text (type-of text tenv))
-                      (type_color (type-of color tenv)))
+                      (type_r (type-of r tenv))
+                      (type_g (type-of g tenv))
+                      (type_b (type-of b tenv)))
                   (check-equal-type! type_size (int-type) type_size)
                   (check-equal-type! type_i (int-type) type_i)
                   (check-equal-type! type_j (int-type) type_j)
+                  (check-equal-type! type_r (int-type) type_r)
+                  (check-equal-type! type_g (int-type) type_g)
+                  (check-equal-type! type_b (int-type) type_b)
                   (check-equal-type! type_text (string-type) type_text)
-                  (check-equal-type! type_color (string-type) type_color)
                   (bool-type)))
       
       (else
