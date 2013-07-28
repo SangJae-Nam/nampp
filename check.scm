@@ -446,14 +446,14 @@
            (bool-val #t)))
       
       (textout-exp (text i j size r g b)
-         (let ((text_ (expval->string_ (value-of text env)))
+         (let ((text_ (expval->string (value-of text env)))
               (point_i (expval->num (value-of i env)))
               (point_j (expval->num (value-of j env)))
               (size_ (expval->num (value-of size env)))
               (color_r (expval->num (value-of r env)))
               (color_g (expval->num (value-of g env)))
               (color_b (expval->num (value-of b env))))
-           (n_text (remove-dquote text_) point_i point_j size_ color_r color_g color_b)
+           (n_text (remove-dquote (format "~a" text_)) point_i point_j size_ color_r color_g color_b)
            (bool-val #t)))
          
        (else
@@ -895,7 +895,7 @@
                   (check-equal-type! type_r (int-type) type_r)
                   (check-equal-type! type_g (int-type) type_g)
                   (check-equal-type! type_b (int-type) type_b)
-                  (check-equal-type! type_text (string-type) type_text)
+                  ;(check-equal-type! type_text (string-type) type_text)
                   (bool-type)))
       
       (else
