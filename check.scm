@@ -106,6 +106,28 @@
                  ;;그리기
                  (send output_dc draw-ellipse x1 y1 radius radius)))
 
+(define n_triangle (lambda (x1 y1 x2 y2 x3 y3 brush r g b)
+                     ;;pen, brush 설정
+                     (cond
+                       [(= brush 0)
+                        (send output_dc set-pen (make-object color% r g b) 5 'solid)
+                        (send output_dc set-brush (make-object color% r g b) 'solid)]
+                       [(= brush 1)
+                        (send output_dc set-pen (make-object color% r g b) 5 'solid)
+                        (send output_dc set-brush (make-object color% r g b) 'transparent)]
+                       )
+                     ;;그리기
+                     (send output_dc draw-path (draw_triangle x1 y1 x2 y2 x3 y3))))
+
+;;dc-path를 생성하여 삼각형의 path를 만든다.
+(define draw_triangle (lambda (x1 y1 x2 y2 x3 y3)
+                        (let ([p (new dc-path%)])
+                          (send p move-to x1 y1)
+                          (send p line-to x2 y2)
+                          (send p line-to x3 y3)
+                          (send p close)
+                          p )))
+
 (define n_rectangle (lambda (x1 y1 x2 y2 brush r g b)
                  ;;pen, brush 설정
                  (cond
@@ -126,7 +148,6 @@
                  (send output_dc set-font (make-object font% size 'default))
                  ;;그리기
                  (send output_dc draw-text t x y)))
-
 
 ;;string-exp에서 양쪽 끝의 "을 지워준다. - NAM++의 string-exp는 양쪽 끝에 "가 존재하기 때문에 그리기함수에서는 지워줘야 한다.
 (define remove-dquote
@@ -400,15 +421,17 @@
            (n_circle line_i line_j radius outline_solid line_r line_g line_b)
            (bool-val #t)))
       
-      (triangle-exp (a b c i j outline_solid color)
-         (let ((side_a (expval->num (value-of a env)))
-              (side_b (expval->num (value-of b env)))
-              (side_c (expval->num (value-of c env)))
-              (point_i (expval->num (value-of i env)))
-              (point_j (expval->num (value-of j env)))
-              (outline_solid_ (expval->string_ (value-of outline_solid env)))
-              (line_color (expval->string_ (value-of color env))))
-           ;(n_triangle side_a side_b side_c point_i point_j (remove-dquote outline_solid_) (remove-dquote line_color))
+      (triangle-exp (x1 y1 x2 y2 x3 y3 outline_solid r g b)
+         (let ((tri_x1 (expval->num (value-of x1 env)))
+               (tri_y1 (expval->num (value-of y1 env)))
+               (tri_x2 (expval->num (value-of x2 env)))
+               (tri_y2 (expval->num (value-of y2 env)))
+               (tri_x3 (expval->num (value-of x3 env)))
+               (tri_y3 (expval->num (value-of y3 env)))
+               (tri_r (expval->num (value-of r env)))
+               (tri_g (expval->num (value-of g env)))
+               (tri_b (expval->num (value-of b env))))
+           (n_triangle tri_x1 tri_y1 tri_x2 tri_y2 tri_x3 tri_y3 outline_solid tri_r tri_g tri_b)
            (bool-val #t)))
       
       (rectangle-exp (x y i j outline_solid r g b)
@@ -509,9 +532,6 @@
               'aaaaaaaaaaaaaaaaaaaaaa)
             (value-of body new-env))))
       (i-method (r-type vars var-types) ""))))
-
-
-
 
 (define check
   (lambda (string)
@@ -833,21 +853,25 @@
                   (check-equal-type! type_b (int-type) type_b)
                   (bool-type)))
       
-      (triangle-exp (a b c i j outline_solid color)
-                (let ((type_a (type-of a tenv))
-                      (type_b (type-of b tenv))
-                      (type_c (type-of c tenv))
-                      (type_i (type-of i tenv))
-                      (type_j (type-of j tenv))
-                      (type_line_solid (type-of outline_solid tenv))
-                      (type_color (type-of color tenv)))
-                  (check-equal-type! type_a (int-type) type_a)
+      (triangle-exp (x1 y1 x2 y2 x3 y3 outline_solid r g b)
+                (let ((type_x1 (type-of x1 tenv))
+                      (type_y1 (type-of y1 tenv))
+                      (type_x2 (type-of x2 tenv))
+                      (type_y2 (type-of y2 tenv))
+                      (type_x3 (type-of x3 tenv))
+                      (type_y3 (type-of y3 tenv))
+                      (type_r (type-of r tenv))
+                      (type_g (type-of g tenv))
+                      (type_b (type-of b tenv)))
+                  (check-equal-type! type_x1 (int-type) type_x1)
+                  (check-equal-type! type_y1 (int-type) type_y1)
+                  (check-equal-type! type_x2 (int-type) type_x2)
+                  (check-equal-type! type_y2 (int-type) type_y2)
+                  (check-equal-type! type_x3 (int-type) type_x3)
+                  (check-equal-type! type_y3 (int-type) type_y3)
+                  (check-equal-type! type_r (int-type) type_r)
+                  (check-equal-type! type_g (int-type) type_g)
                   (check-equal-type! type_b (int-type) type_b)
-                  (check-equal-type! type_c (int-type) type_c)
-                  (check-equal-type! type_i (int-type) type_i)
-                  (check-equal-type! type_j (int-type) type_j)
-                  (check-equal-type! type_line_solid (string-type) type_line_solid)
-                  (check-equal-type! type_color (string-type) type_color)
                   (bool-type)))
       
       (rectangle-exp (x y i j outline_solid r g b)

@@ -10,6 +10,14 @@ begin
 	%%Delete Screen
 	rectangle(0, 0, 600, 600, 0, 255, 255, 255);
 
+	text-out("Triangle", 100, 100, 20, 0, 0, 0);
+	triangle(150, 150, 80, 250, 220, 250, 0, 255, 0, 0);
+	triangle(150, 200, 80, 300, 220, 300, 0, 255, 0, 255);
+
+	sleep(2);
+	%%Delete Screen
+	rectangle(0, 0, 600, 600, 0, 255, 255, 255);
+
 	text-out("Rectangle", 100, 100, 20, 0, 0, 0);
 	rectangle(100, 150, 200, 250, 0, 255, 0, 0);
 	rectangle(200, 200, 300, 300, 1, 10, 250, 30);

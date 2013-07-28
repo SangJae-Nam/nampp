@@ -197,7 +197,11 @@
   
   ;; triangle-exp
   ;; Expression ::= triangle(Expression, Expression, Expression, Expression, Expression, Expresion, Expression)
-  (triangle-exp (a expression?) (b expression?) (c expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?))
+  (triangle-exp (x1 expression?) (y1 expression?)
+                (x2 expression?) (y2 expression?)
+                (x3 expression?) (y3 expression?)
+                (outline_solid number?)
+                (r expression?) (g expression?) (b expression?))
   
   ;; rectangle-exp
   ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expresion)
@@ -398,8 +402,8 @@
     ;; Expression ::= circle(r, i, j, out_solid, r, g, b)
     (expression ("circle" "(" expression "," expression "," expression "," number "," expression "," expression "," expression ")") circle-exp)
     
-    ;; Expression ::= triangle(Expression, Expression, Expression, Expression, Expression, Expression, Expression)
-    (expression ("triangle" "(" expression "," expression "," expression "," expression "," expression "," expression "," expression ")") triangle-exp)
+    ;; Expression ::= triangle(x1, y1, x2, y2, x3, y3, out_solid, r, g, b)
+    (expression ("triangle" "(" expression "," expression "," expression "," expression "," expression "," expression "," number "," expression "," expression "," expression ")") triangle-exp)
     
     ;; Expression ::= rectangle(a, b, i, j, out_solid, r, g, b)
     (expression ("rectangle" "(" expression "," expression "," expression "," expression "," number "," expression "," expression "," expression ")") rectangle-exp)
@@ -548,8 +552,8 @@
         (string-append "line(" x "," y "," i "," j "," r "," g "," b ")"))
       (circle-exp (radius i j outline_solid r g b)
         (string-append "circle(" radius "," i "," j "," outline_solid "," r "," g "," b ")"))
-      (triangle-exp (a b c i j outline_solid color)
-        (string-append "triangle(" a "," b "," c "," i "," j "," outline_solid "," color ")"))
+      (triangle-exp (x1 y1 x2 y2 x3 y3 outline_solid r g b)
+        (string-append "triangle(" x1 "," y1 "," x2 "," y2 "," x3 "," y3 ","outline_solid "," r "," g "," b ")"))
       (rectangle-exp (x y i j outline_solid r g b)
         (string-append "rectangle(" x "," y "," i "," j "," outline_solid "," r "," g "," b ")"))
       (polygon-exp (r n i j outline_solid color)
