@@ -209,10 +209,6 @@
                  (outline_solid number?)
                  (r expression?) (g expression?) (b expression?))
   
-  ;; polygon-exp
-  ;; Expression ::= rectangle(Expression, Expression, Expression, Expression, Expression, Expresion)
-  (polygon-exp (r expression?) (n expression?) (i expression?) (j expression?) (outline_solid expression?) (color expression?))
-  
   ;; textout-exp
   ;; Expression ::= text-out(Expression, Expression, Expression, Expression, Expression)
   (textout-exp (text expression?) (i expression?) (j expression?) (size expression?)
@@ -408,9 +404,6 @@
     ;; Expression ::= rectangle(a, b, i, j, out_solid, r, g, b)
     (expression ("rectangle" "(" expression "," expression "," expression "," expression "," number "," expression "," expression "," expression ")") rectangle-exp)
     
-    ;; Expression ::= regular-polygon(Expression, Expression, Expression, Expression, Expression, Expression)
-    (expression ("regular-polygon" "(" expression "," expression "," expression "," expression "," expression "," expression ")") polygon-exp)
-    
     ;; Expression ::= text-out(text, i, j, size, r, g, b)
     (expression ("text-out" "(" expression "," expression "," expression "," expression "," expression "," expression "," expression ")") textout-exp)
     
@@ -556,8 +549,6 @@
         (string-append "triangle(" x1 "," y1 "," x2 "," y2 "," x3 "," y3 ","outline_solid "," r "," g "," b ")"))
       (rectangle-exp (x y i j outline_solid r g b)
         (string-append "rectangle(" x "," y "," i "," j "," outline_solid "," r "," g "," b ")"))
-      (polygon-exp (r n i j outline_solid color)
-        (string-append "regular-polygon(" r "," n "," i "," j "," outline_solid "," color ")"))
       (textout-exp (text i j size r g b)
         (string-append "text-out(" text "," i "," j "," size "," r "," g "," b ")"))
       (else
