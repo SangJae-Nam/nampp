@@ -1,0 +1,15 @@
+letrec 
+listof int quick(rest : listof int)
+= if null?(rest) then rest else
+    if null?(cdr(rest)) then rest else
+	let pivot = car(rest) in let parts = (partition (cdr(rest), pivot, list(list()), list(list())))
+	    in let smalls = car(parts) in let larges = car(cdr(parts))
+		in append((quick (smalls)) append(list(pivot) (quick (larges))))
+
+listof listof int partition(re : listof int, piv : int, small : listof listof int, large : listof listof int)
+= if null?(re) then append(small large) else
+    let fore = car(re) aft = cdr(re)
+	in if <(fore,piv) then (partition (aft, piv, list(append(list(fore) car(small))), large))
+		else (partition (aft, piv, small, list(append(list(fore) car(large)))))
+
+in (quick (list (3,7,9,-1, 5, 8, 22)))

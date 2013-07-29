@@ -398,7 +398,17 @@
       (append-exp (exp1 exp2)
         (let ((list1 (expval->list (value-of exp1 env)))
               (list2 (expval->list (value-of exp2 env))))
-          (list-val (append list1 list2))))      
+          (list-val (append list1 list2))))
+;; list의 값이 null인지 확인하는 expression
+;; 2013. 7. 25
+;; creator : 김용규
+;; Expression ::= null?(Expression)
+      (null-exp (lst)
+        (let ((list (expval->list (value-of lst env))))
+          (if (null? list)
+              (bool-val #t)
+              (bool-val #f))))
+     
       ;;그리기 함수
       (line-exp (x y i j r g b)
          (let ((line_x (expval->num (value-of x env)))
@@ -712,7 +722,8 @@
                    exp)
                   (void-type))
       
-      (list-exp (exps) 
+      (list-exp (exps)
+                (if (null? exps) (list-type (int-type))
                 (let ((type-of-car (type-of (car exps) tenv)))
                   (map
                    (lambda (exp)
@@ -721,25 +732,34 @@
                       type-of-car
                       exp))
                    (cdr exps))
-                  (list-type type-of-car)))
-
-;; car, cdr append type check      
+                  (list-type type-of-car))))
+      
+      ;; car, cdr append type check      
+      ;; car, cdr append type check      
       (car-exp (exp)
-        (let ((exp-type (type-of exp tenv)))
-          (check-equal-type! exp-type (list-type (int-type)) exp)
-          exp-type))
-                    
+               (let ((exp-type (type-of exp tenv)))
+                 (if (equal? exp-type (list-type (int-type)))
+                     (int-type)
+                     (if (equal? exp-type (list-type (list-type (int-type)))) (list-type (int-type)) #f))))
+      
       (cdr-exp (exp)
-        (let ((exp-type (type-of exp tenv)))
-          (check-equal-type! exp-type (list-type (int-type)) exp)
-          exp-type))
+               (let ((exp-type (type-of exp tenv)))
+                 (if (equal? exp-type (list-type (int-type))) (list-type (int-type))
+                     (if (equal? exp-type (list-type (list-type (int-type)))) (list-type (list-type (int-type))) #f))))
       
       (append-exp (exp1 exp2)
-        (let ((exp1-type (type-of exp1 tenv))
-              (exp2-type (type-of exp2 tenv)))
-          (check-equal-type! exp1-type (list-type (int-type)) exp1)
-          (check-equal-type! exp2-type (list-type (int-type)) exp2)
-          exp1-type))      
+                  (let ((exp1-type (type-of exp1 tenv))
+                        (exp2-type (type-of exp2 tenv)))
+                    ;(check-equal-type! exp1-type exp2-type exp1)
+                    exp1-type))
+      
+      ;; list의 값이 null인지 확인하는 expression
+      ;; 2013. 7. 25
+      ;; creator : 김용규
+      ;; Expression ::= null?(Expression)
+      (null-exp (lst)
+                (bool-type))
+      
       
       ;; object stuff begins here
       

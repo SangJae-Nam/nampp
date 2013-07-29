@@ -181,6 +181,11 @@
 ;; append expression 생성
 ;; Expression ::= append (exp1 exp2)
   (append-exp (lst1 expression?) (lst2 expression?))  
+  ;; list의 값이 null인지 확인하는 expression
+  ;; 2013. 7. 25
+  ;; creator : 김용규
+  ;; Expression ::= null?(Expression)
+  (null-exp (lst expression?))
   
 ;; line-exp
 ;; Expression ::= line(Expression, Expression, Expression, Expression, Expression)
@@ -390,6 +395,9 @@
      ;; Expresion ::= append(Expression Expression)
     (expression ("append" "(" expression expression ")") append-exp)
     
+    ;; Expression ::= null?(Expression)
+    (expression ("null?" "(" expression ")") null-exp)
+    
     ;;여기서부터 그리기 exp
     
     ;; Expression ::= line(x, y, i, j, r, g, b)
@@ -534,12 +542,14 @@
        (format "!=(~a,~a)" (exp->string exp1) (exp->string exp2)))
 ;; car, cdr expresion      
       (car-exp (lst)
-        (format "car (~a)" lst))
+        (format "car (~a)" (exp->string lst)))
       (cdr-exp (lst)
-        (format "cdr (~a)" lst))
+        (format "cdr (~a)" (exp->string lst)))
 ;; append expression
       (append-exp (lst1 lst2)
-         (format "append (~a ~a)" (exp->string lst1) (exp->string lst2)))      
+         (format "append (~a ~a)" (exp->string lst1) (exp->string lst2)))   
+       (null-exp (lst)
+                 (format "null?(~a)" (exp->string lst)))
       ;;그리기 관련
       (line-exp (x y i j r g b)
         (string-append "line(" x "," y "," i "," j "," r "," g "," b ")"))
