@@ -17,8 +17,7 @@
 (define figure_frame (new frame% [label "[type-object-oriented] Output"]
                                  [width 600]
                                  [height 600]))
-(define bottom_pane (new vertical-pane%  [parent edit_frame]))
-(define top_pane (new vertical-pane%  [parent bottom_pane]))
+(define top_pane (new vertical-pane%  [parent edit_frame]))
 
 ;메뉴를 만들어 준다
 (define menu_bar (new menu-bar% [parent edit_frame]))
@@ -48,11 +47,6 @@
 (define m_font (new menu% [label "Font"] [parent menu_bar]))
 (append-editor-operation-menu-items m_edit #f)
 (append-editor-font-menu-items m_font)
-
-(define output_window (new message% [parent bottom_pane]
-                                    [label ""]
-                                    [min-width 600]
-                                    {min-height 100}))
 
 (define d (new editor-canvas% [parent top_pane]))
 (define t (new text%))
