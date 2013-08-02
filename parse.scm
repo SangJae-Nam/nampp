@@ -179,7 +179,7 @@
 ;; 2013. 7. 23
 ;; creator : 김용규
 ;; append expression 생성
-;; Expression ::= append (exp1 exp2)
+;; Expression ::= append (exp1, exp2)
   (append-exp (lst1 expression?) (lst2 expression?))  
   ;; list의 값이 null인지 확인하는 expression
   ;; 2013. 7. 25
@@ -392,8 +392,8 @@
      ;; Expresion ::= cdr(identifier)
     (expression ("cdr" "(" expression ")") cdr-exp)
     
-     ;; Expresion ::= append(Expression Expression)
-    (expression ("append" "(" expression expression ")") append-exp)
+     ;; Expresion ::= append(Expression, Expression)
+    (expression ("append" "(" expression "," expression ")") append-exp)
     
     ;; Expression ::= null?(Expression)
     (expression ("null?" "(" expression ")") null-exp)

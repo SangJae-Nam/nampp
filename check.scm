@@ -729,9 +729,11 @@
                   (list-type type-of-car))))
       
       ;; car, cdr append type check      
-      ;; car, cdr append type check      
+      ;; car, cdr append type check
       (car-exp (exp)
                (let ((exp-type (type-of exp tenv)))
+                 ;(check-equal-type! exp-type (list-type (int-type)) exp)
+                 ;(list-type (int-type))));;상재 - 요건 왜 안먹히지??
                  (if (equal? exp-type (list-type (int-type)))
                      (int-type)
                      (if (equal? exp-type (list-type (list-type (int-type)))) (list-type (int-type)) #f))))
@@ -739,7 +741,10 @@
       (cdr-exp (exp)
                (let ((exp-type (type-of exp tenv)))
                  (if (equal? exp-type (list-type (int-type))) (list-type (int-type))
-                     (if (equal? exp-type (list-type (list-type (int-type)))) (list-type (list-type (int-type))) #f))))
+                     (if (equal? exp-type (list-type (list-type (int-type))))
+                         (list-type (list-type (int-type)))
+                         ;(check-equal-type! exp-type (list-type (int-type)) exp)))));;상재 - 요건 왜 안먹히지??
+                         #f))))
       
       (append-exp (exp1 exp2)
                   (let ((exp1-type (type-of exp1 tenv))
