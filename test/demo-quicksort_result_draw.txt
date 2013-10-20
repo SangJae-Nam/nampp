@@ -1,0 +1,51 @@
+let input = list (7, 2, 3, 5, 1, 4, 9, 0, 8, 6) in %%입력 리스트 설정
+letrec
+
+listof int quick(rest : listof int)
+= if null?(rest) then rest else %%리스트에 내용이 없거나
+     if null?(cdr(rest)) then rest else %% 한개만 있으면 아무 작업을 하지 않음
+       let pivot = car(rest) in %% 피봇을 리스트의 왼쪽에 설정
+           let parts = (partition (cdr(rest), pivot, list(list()), list(list()))) in
+             let smalls = car(parts) in
+               let larges = car(cdr(parts)) in
+                 append((quick (smalls)), append(list(pivot), (quick (larges))))   
+                                          
+listof listof int partition(re : listof int, piv : int, small : listof listof int, large : listof listof int)
+= if null?(re) then append(small, large) else
+    let fore = car(re) aft = cdr(re)
+	in if <(fore,piv) then (partition (aft, piv, list(append(list(fore), car(small))), large))
+		else (partition (aft, piv, small, list(append(list(fore), car(large)))))
+
+%% 리스트의 내용을 화면에 보여주는 함수, 너비 600 기준으로 한 자리 숫자 10개를 출력하는데 최적화되어 있다.
+int show_numbers(numbers : listof int, pivot : int, index : int, line_no : int)
+  = if null?(numbers) then 0 else
+       if null?(cdr(numbers)) then
+         begin
+            text-out(car(numbers), +(10, *(index, 58)), +(200, *(line_no, 200)), 40, 0, 0, 0);%%Draw number
+            if ==(pivot, car(numbers)) then
+              triangle(+(25, *(index, 58)), +(270, *(line_no, 200)), +(0, *(index, 58)), +(350, *(line_no,200)), +(45, *(index, 58)), +(350, *(line_no,200)), 0, 0, 210, 0)
+            else
+              true;
+            (show_numbers (cdr(numbers), pivot, +(index, 1), line_no))
+         end
+       else%% 콤마 찍는 곳
+         begin
+            text-out(car(numbers), +(10, *(index, 58)), +(200, *(line_no, 200)), 40, 0, 0, 0);%%Draw number
+            text-out(",", +(35, *(index, 58)), +(200, *(line_no, 200)), 40, 0, 0, 0);%%Draw number
+            if ==(pivot, car(numbers)) then
+              triangle(+(25, *(index, 58)), +(270, *(line_no, 200)), +(0, *(index, 58)), +(350, *(line_no,200)), +(45, *(index, 58)), +(350, *(line_no,200)), 0, 0, 210, 0)
+            else
+              true;
+            (show_numbers (cdr(numbers), pivot, +(index, 1), line_no))
+         end
+
+%%화면에서 START부터 END까지 인덱스 영역을 지우는 함수
+bool erase_numbers(start_ : int, end_ : int)
+   =  rectangle(+(10, *(start_, 58)), 250, +(10, *(+(end_, 1), 58)), 330, 0, 255, 255, 255)
+
+in begin
+     text-out("퀵 정렬", 230, 10, 30, 0, 0, 0);%%제목
+     (show_numbers(input, -111111, 0, 0));
+     let sort = (quick (input)) in
+       (show_numbers(sort, -111111, 0, 1))
+   end

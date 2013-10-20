@@ -1,0 +1,92 @@
+let input = list (9, 2, 7, 3, 6, 4, 5, 1, 8, 0) in %%입력 리스트 설정
+letrec
+
+%%리스트의 개수를 구하는 함수
+int number_of_list(lst : listof int)
+= if null?(lst) then 0 else
+     +((number_of_list (cdr(lst))), 1)
+  
+bool quick_sort(low : int, high : int)
+= if null?(input) then false else %%리스트에 내용이 없으면 그냥 리턴
+     if <=(high, low) then false else %%종료 조건
+       let pivotpoint = low in
+         begin
+           rectangle(0, 180, 600, 600, 0, 255, 255, 255);
+           text-out("피봇 기준으로 정렬 전", 10, 180, 30, 0, 0, 0);
+           (show_numbers (input, pivotpoint, low, high, 0));
+           sleep(3);
+           
+           set pivotpoint = (partion (low, high, pivotpoint));
+           
+           rectangle(0, 180, 600, 600, 0, 255, 255, 255);
+           text-out("피봇 기준으로 정렬 후", 10, 180, 30, 0, 0, 0);
+           (show_numbers (input, pivotpoint, low, high, 0));
+           sleep(3);
+           
+           (quick_sort(low, -(pivotpoint, 1)));
+           (quick_sort(+(pivotpoint, 1), high))
+         end 
+
+int partion(low : int, high : int, pivotpoint : int)
+= let i = low in%리스트를 순회할 인덱스
+   let j = low in
+   let temp = 0 in
+   let pivotitem = list-get(input, low) in
+     letrec
+       bool partion_inner(low : int, high : int, pivotpoint : int)
+       = if >(i, high) then true else
+              if <(list-get(input, i), pivotitem) then
+                begin
+                  set j = +(j, 1);
+                  set temp = list-get(input, i);
+                  list-set(input, i, list-get(input, j));
+                  list-set(input, j, temp);
+                  set i = +(i, 1);
+                  (partion_inner(low, high, pivotpoint))
+                end
+            else
+               begin
+                  set i = +(i, 1);
+                  (partion_inner(low, high, pivotpoint))
+               end
+         in begin
+           (partion_inner(low, high, pivotpoint));
+           set temp = list-get(input, low);
+           list-set(input, low, list-get(input, j));
+           list-set(input, j, temp);
+           j%변경된 pivot위치를 리턴
+        end
+
+%% 리스트의 내용을 화면에 보여주는 함수, 너비 600 기준으로 한 자리 숫자 10개를 출력하는데 최적화되어 있다.
+int show_numbers(numbers : listof int, pivot : int, low : int, high : int, index : int)
+  = if null?(numbers) then 0 else
+       begin
+          text-out(car(numbers), +(15, *(index, 58)), 250, 40, 0, 0, 0);%%Draw number
+          %% Pivot에 해당하는 삼각형 그리기
+          if ==(pivot, index) then
+            triangle(+(25, *(index, 58)), 330, +(0, *(index, 58)), 400, +(45, *(index, 58)), 400, 0, 0, 210, 0)
+          else
+            true;
+          %% Low에 해당하는 괄호 그리기
+          if ==(low, index) then
+            text-out("(", +(0, *(index, 58)), 250, 40, 255, 0, 0)
+            %triangle(+(25, *(index, 58)), 330, +(0, *(index, 58)), 400, +(45, *(index, 58)), 400, 0, 255, 255, 0)
+          else
+            true;
+          %% High에 해당하는 삼각형 그리기
+          if ==(high, index) then
+            text-out(")", +(40, *(index, 58)), 250, 40, 255, 0, 0)
+            %triangle(+(25, *(index, 58)), 330, +(0, *(index, 58)), 400, +(45, *(index, 58)), 400, 0, 255, 0, 0)
+          else
+            true;
+          (show_numbers (cdr(numbers), pivot, low, high, +(index, 1)))
+       end
+
+in begin
+    text-out("퀵 정렬", 200, 10, 40, 0, 0, 0);
+    (quick_sort (0, -((number_of_list(input)), 1)));
+    rectangle(0, 180, 600, 600, 0, 255, 255, 255);
+    text-out("퀵 정렬 완료", 10, 180, 30, 0, 0, 0);
+    (show_numbers (input, -1, -1, -1, 0));
+    input
+  end

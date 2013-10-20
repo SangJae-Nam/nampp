@@ -97,6 +97,16 @@
 ;; Expression ::= list({Expression}*(,))                  
   (list-exp (exps (list-of expression?)))
   
+  (list-a-exp (var identifier?) (index expression?))
+  
+;; list의 원소 가져오기
+;; Expression ::= list-get(Identifier, Expression)
+  (list-get-exp (var symbol?) (index expression?))
+  
+;; list의 원소 설정
+;; Expression ::= list-set(Identifier, Expression, Expression)
+  (list-set-exp (var symbol?) (index expression?) (exp expression?))
+  
   ;;sleep-exp
   ;;Expression ::= sleep(Expression)
   (sleep-exp (exp1 expression?))
@@ -331,8 +341,14 @@
     ;; Expression ::= %(Expression, Expression)
     (expression ("mod" "(" expression "," expression ")") mod-exp)
     
-    ;; Expression ::= list({Expression}*(,))                  
+    ;; Expression ::= list({Expression}*(,))
     (expression ("list" "("(arbno expression (arbno ",")) ")") list-exp)
+    
+    ;; Expression ::= list-get(Identifier, Expression)
+    (expression ("list-get" "(" identifier "," expression ")") list-get-exp)
+    
+    ;; Expression ::= list-set(Identifier, Expression, Expression)
+    (expression ("list-set" "(" identifier "," expression "," expression ")") list-set-exp)
     
     ;; Expression :: sleep(Expression)
     (expression ("sleep" "(" expression ")") sleep-exp)
@@ -476,8 +492,16 @@
 	(string-append "let " (let->exp vars exps) " in " (exp->string body)))
       (proc-exp (vars types body)
         (format "proc(~a)~a" vars (exp->string body)))
-      (call-exp (rator rand)
-        (format "(~a ~a)" (exp->string rator) (exp->string rand)))
+      (call-exp (rator rand);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (format "(~a (~a))"
+          (letrec ((rand->string (lambda (rands)
+            (cond
+              ((null? rands) "")
+              ((null? (cdr rands))
+                (format "~a" (exp->string (car rands))))
+              (else
+                (format "~a,~a" (exp->string (car rands)) (rand->string (cdr rands))))))))
+            (exp->string rator) (rand->string rand))))
       (letrec-exp (p-result-types p-names b-varss b-var-typess p-bodies letrec-body)
         (format "letrec ~a in ~a"
           (letrec ((proc-list->string (lambda (p-name-list b-var-list p-body-list)
@@ -512,6 +536,10 @@
 	;;; 용규 수정 ;;;
 	;;; (format "(~a)" ))
 	(string-append "list " "(" (rands-expression exps) ")"))
+      (list-get-exp (var index)
+        (format "list-get(~a,~a)" var (exp->string index)))
+      (list-set-exp (var index exp)
+        (format "list-get(~a,~a,~a)" var (exp->string index) (exp->string exp)))
       (sleep-exp (exp1)
         (format "sleep(~a)" (exp->string exp1)))
 ;;class관련

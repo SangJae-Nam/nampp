@@ -1,7 +1,7 @@
 #lang racket
 
 (require eopl)
-(require "parse.scm" "class.scm" "store.scm")
+(require "parse.scm" "class.scm"); "store.scm")
 (provide readfile trace-run-enter trace-class trace-run-exit trace-run-spaces)
 
 ;; ======================================================================
@@ -30,9 +30,10 @@
 	 (trace-run-spaces trace-no-of-spaces)
 	 (display (eopl:printf "+ exp=~a~n" (exp->string exp)))
 	 (trace-run-spaces trace-no-of-spaces)
-	 (display (eopl:printf "| env=~a, sto=~a~n"
-			  (env->string-top env)
-			  (store->string-top the-store))))))
+	 ;(display (eopl:printf "| env=~a, sto=~a~n"
+;			  (env->string-top env)
+;			  (store->string-top the-store)))
+         )))
 
 (define trace-class
   (lambda ()

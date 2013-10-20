@@ -257,6 +257,15 @@
 ;; ex) ((3 -3) (5 -5))
       (list-exp (exps) 
         (list-val (value-of-exps exps env)))
+      (list-get-exp (var index)
+        (list-get (expval->list (deref (apply-env env var))) (expval->num (value-of index env))))
+      (list-set-exp (var index exp)
+        (let ((var-ref (apply-env env var)))
+          (let ((mod-list (list-set (expval->list (deref var-ref))
+                                    (expval->num (value-of index env))
+                                    (value-of exp env))))
+            (setref! var-ref (list-val mod-list))
+            (deref var-ref))))
 	;; 용규 수정;;
       (let-exp (vars exps body)
         (let ((vlist (value-of-exps exps env)))
@@ -727,6 +736,26 @@
                       exp))
                    (cdr exps))
                   (list-type type-of-car))))
+      
+      (list-get-exp (lst index)
+        (cases type (apply-tenv tenv lst)
+          (list-type (type1)
+            (let ((index-type (type-of index tenv)))
+                   (check-equal-type! index-type (int-type) index)
+                   type1))
+          (else
+            (eopl:error 'list-get-exp "~a is not list-type" lst))))
+      
+      (list-set-exp (lst index exp)
+        (let ((lst-type (apply-tenv tenv lst)))
+          (cases type lst-type
+            (list-type (type1)
+              (let ((index-type (type-of index tenv)) (exp-type (type-of exp tenv)))
+                     (check-equal-type! index-type (int-type) index)
+                     (check-equal-type! exp-type type1 exp)
+                     lst-type))
+            (else
+              (eopl:error 'list-get-exp "~a is not list-type" lst)))))
       
       ;; car, cdr append type check      
       ;; car, cdr append type check

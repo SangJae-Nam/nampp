@@ -1,0 +1,13 @@
+letrec
+  int show_numbers(numbers : listof int, pivot : int, index : int)
+    = if null?(numbers) then 0 else
+         begin
+            text-out(car(numbers), +(10, *(index, 58)), 250, 40, 0, 0, 0);%%Draw number
+            if ==(pivot, index) then
+              triangle(+(25, *(index, 58)), 330, +(0, *(index, 58)), 400, +(45, *(index, 58)), 400, 0, 0, 210, 0)
+            else
+              true;
+            (show_numbers (cdr(numbers), pivot, +(index, 1)))
+         end
+    in
+  (show_numbers( list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 5, 0))
