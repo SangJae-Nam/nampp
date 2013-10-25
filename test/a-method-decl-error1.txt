@@ -1,18 +1,22 @@
 % =========================================================
 % a-method-decl  test - Error case
 class cl extends object
- field i
+ field int i
 
  method void initialize(x: int)
   begin
    set i = x
   end
 
- method methodDecl1(x: int)
+ method int methodDecl1()
   begin
-   set i = -(x,1)
+   set i = -(i,1);
+   i
   end
 
-% == ¸®ÅÏ Å¸ÀÔ Á¤ÀÇÇØÁà¾ßµÊ
+let c1 = new cl("100") in
+  send c1 methodDecl1()
+
+% == í´ë˜ìŠ¤ ìƒì„± ì‹œ  íŒŒë¼ë¯¸í„° ì…ë ¥ ì˜¤ë¥˜
 % =========================================================
 
