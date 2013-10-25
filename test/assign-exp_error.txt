@@ -4,3 +4,4 @@
 let v1 = "hello" in
 	set v2 = "test"
 
+% v2를 찾을 수 없음.
