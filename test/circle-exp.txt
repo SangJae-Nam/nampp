@@ -1,6 +1,6 @@
 % =========================================================
 % circle-exp  test - Normal case
-class circle extends object
+class circle1 extends object
  field int r
  field int i
  field int j
@@ -20,7 +20,7 @@ method void initialize(rr: int, ii: int, jj: int, outline: bool, rred: int, ggre
  set blue = bblue
  end
  
-method void setCircle(rr: int, ii: int, jj: int, outline: string, cc: string)
+method void setCircle(rr: int, ii: int, jj: int, outline: bool, rred: int, ggreen: int, bblue: int)
  begin
  set r = rr;
  set i = ii;
@@ -31,7 +31,7 @@ method void setCircle(rr: int, ii: int, jj: int, outline: string, cc: string)
  set blue = bblue
  end
 
-method void drawCircle()
+method bool drawCircle()
   begin
    if sline then
      circle(r, i, j, 0, red, green, blue)
@@ -39,8 +39,11 @@ method void drawCircle()
      circle(r, i, j, 1, red, green, blue)
   end
   
-let c1 = new circle(5, 15, 30, true, 255, 0, 255) in
-let c2 = new circle(20, 30, 50, false, 0, 255, 255) in
- send c1 drawCircle()
+let c1 = new circle1(5, 15, 30, true, 255, 0, 255) in
+let c2 = new circle1(20, 30, 50, false, 0, 255, 255) in
+ begin
+   send c1 drawCircle();
+   send c2 drawCircle()
+ end
 % == 
 % =========================================================
