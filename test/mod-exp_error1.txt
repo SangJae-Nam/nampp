@@ -1,4 +1,4 @@
 % =========================================================
-% div-exp test - Type error case
-%(20, "10")
+% mod-exp test - Type error case
+mod(20, "10")
 % == error
