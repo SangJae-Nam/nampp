@@ -1,6 +1,6 @@
 % an-abstract-method-decl 
 % =========================================================
-% an-abstract-method-decl  test - Normal case
+% an-abstract-method-decl  test - Error case
 interface inter
  method void sum(x: int)
 
