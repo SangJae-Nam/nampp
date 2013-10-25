@@ -10,15 +10,7 @@ class circle1 extends object
  field int blue
 
 method void initialize(rr: int, ii: int, jj: int, outline: bool, rred: int, ggreen: int, bblue: int)
- begin
- set r = rr;
- set i = ii;
- set j = jj;
- set sline = outline;
- set red = rred;
- set green = ggreen;
- set blue = bblue
- end
+ send self setCircle(rr, ii, jj, outline, rred, ggreen, bblue)
  
 method void setCircle(rr: int, ii: int, jj: int, outline: bool, rred: int, ggreen: int, bblue: int)
  begin
