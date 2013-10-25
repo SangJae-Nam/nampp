@@ -1,9 +1,9 @@
-* super-call-exp
 % =========================================================
 % super-call-exp  test - Normal case
 class c1 extends object
+ field int bbb
 
- method void initialize()
+ method void initialize() set bbb = 5
  method int m1 () send self m2()
  method int m2 () 13
 
