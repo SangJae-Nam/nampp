@@ -4,37 +4,43 @@ class circle extends object
  field int r
  field int i
  field int j
- field string sline
- field string color
+ field bool sline
+ field int red
+ field int green
+ field int blue
 
-method void initialize(rr: int, ii: int, jj: int, outline: string, cc: string)
+method void initialize(rr: int, ii: int, jj: int, outline: bool, rred: int, ggreen: int, bblue: int)
  begin
  set r = rr;
  set i = ii;
  set j = jj;
  set sline = outline;
- set color = cc
+ set red = rred;
+ set green = ggreen;
+ set blue = bblue
  end
+ 
 method void setCircle(rr: int, ii: int, jj: int, outline: string, cc: string)
  begin
  set r = rr;
  set i = ii;
  set j = jj;
- set sline = outline
+ set sline = outline;
+ set red = rred;
+ set green = ggreen;
+ set blue = bblue
  end
- method void setColor(cc: string)
+
+method void drawCircle()
   begin
-   set color = cc
+   if sline then
+     circle(r, i, j, 0, red, green, blue)
+   else
+     circle(r, i, j, 1, red, green, blue)
   end
- method void setSline(outline: string)
-  begin
-   set sline = outline
-  end
- method void drawCircle()
-  begin
-   circle(r,i,j,sline,color)
-  end
- let c1 = new circle(5,15,30,"solid", "red")
- in send c1 drawCircle()
+  
+let c1 = new circle(5, 15, 30, true, 255, 0, 255) in
+let c2 = new circle(20, 30, 50, false, 0, 255, 255) in
+ send c1 drawCircle()
 % == 
 % =========================================================
