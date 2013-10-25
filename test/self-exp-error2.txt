@@ -1,15 +1,20 @@
-* self-exp-error
+% self-exp
 % =========================================================
 % self-exp  test - Error case
 class c1 extends object
+ field int i
 
  method void initialize()
- method int m1 () send self m3()
- method int m2 () 13
+   set i = 1
+
+ method int m1 ()
+   send self m3()
+ method int m2 ()
+   13
 
 
 let o1 = new c1()
  in send o1 m1()
-% == Á¸ÀçÇÏÁö ¾Ê´Â ¸Þ¼Òµå È£Ãâ
+% == ì¡´ìž¬í•˜ì§€ ì•ŠëŠ” ë©”ì†Œë“œ í˜¸ì¶œ
 % =========================================================
 
