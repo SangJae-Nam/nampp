@@ -1,4 +1,4 @@
 % =========================================================
-% div-exp test - Normal case
+% mod-exp test - Normal case
 mod(30, mod(33, 10))
-% == 3
+% == 0
