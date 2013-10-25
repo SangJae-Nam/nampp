@@ -1,16 +1,15 @@
-* super-call-exp
 % =========================================================
 % super-call-exp  test - Error case
-
 class c1 extends object
- method void initialize()
- 
+ field int bbb
+
+ method void initialize() set bbb = 5
  method int m2 () 13
 
 class c2 extends c1
  method int m1 () 22
  method int m2 () 23
- method int m3 () super m1()
+ method int m3 () super m1() %%ERROR
 
 class c3 extends c2
  method int m1 () 32
@@ -18,7 +17,7 @@ class c3 extends c2
 
 let o3 = new c3()
  in send o3 m3()
-% == 
+% == ERROR
 % =========================================================
 
 
