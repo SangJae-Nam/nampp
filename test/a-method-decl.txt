@@ -1,17 +1,21 @@
 % =========================================================
 % a-method-decl  test - Normal case
 class cl extends object
- field i
+ field int i
 
  method void initialize(x: int)
   begin
    set i = x
   end
 
- method void methodDecl1(x: int)
+ method int methodDecl1()
   begin
-   set i = -(x,1)
+   set i = -(i,1);
+   i
   end
+
+let c1 = new cl(100) in
+  send c1 methodDecl1()
 
 % ==
 % =========================================================
