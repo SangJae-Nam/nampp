@@ -1,6 +1,6 @@
 % =========================================================
-% assign-exp test - Normal case
+% assign-exp test - Error case
 
-let v1 = "hello" in
-	set v1 = "test"
+let v1 = 1 in
+	let v2 = 2 in v1
 
