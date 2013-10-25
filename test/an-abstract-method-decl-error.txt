@@ -1,22 +1,28 @@
+% an-abstract-method-decl 
 % =========================================================
-% a-method-decl  test - Error case
-class cl extends object
+% an-abstract-method-decl  test - Normal case
+interface inter
+ method void sum(x: int)
+
+class cl extends object implements inter
  field int i
 
  method void initialize(x: int)
-  begin
    set i = x
-  end
 
- method int methodDecl1()
-  begin
-   set i = -(i,1);
+ method void sum(x: int)
+   set i = +(i,x)
+
+%%오류 - 리턴타입의 정의와 실제 타입이 같지 않음
+ method void get_i()
    i
+
+let o1 = new cl(1000) in
+  begin
+    send o1 sum(999);
+    send o1 get_i()
   end
 
-let c1 = new cl("100") in
-  send c1 methodDecl1()
-
-% == 클래스 생성 시  파라미터 입력 오류
+% == 
+% TYPE: int, Result: 1999
 % =========================================================
-
