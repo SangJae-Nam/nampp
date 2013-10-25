@@ -1,24 +1,27 @@
-* new-object-exp
 % =========================================================
 % new-object-exp  test - Error case
 class cl extends object
- field i
+ field int i
 
  method void initialize(x: int)
-  begin
    set i = x
-  end
 
  method void sum(x: int)
   begin
-   set i = +(i,1)
+   set i = +(i,x)
   end
+ 
+ method int getI()
+   i
 
- let c1 = new cl()
-	in send c1 sum(3)
+ let c1 = new cl() in%%íŒŒë¼ë¯¸í„° ì˜¤ë¥˜
+   begin
+     send c1 sum(3);
+     send c1 getI()
+   end
 
 
-% == initializeÀÇ Àü´Ş°ªÀÌ ´Ù¸¦°æ¿ì
+% == 
 % =========================================================
 
 
