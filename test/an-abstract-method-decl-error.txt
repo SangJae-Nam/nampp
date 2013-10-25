@@ -1,23 +1,28 @@
-* an-abstract-method-decl 
+% an-abstract-method-decl 
 % =========================================================
 % an-abstract-method-decl  test - Normal case
 interface inter
- method int sum(x: int)
+ method void sum(x: int)
 
 class cl extends object implements inter
- field i
+ field int i
 
  method void initialize(x: int)
-  begin
    set i = x
-  end
 
  method void sum(x: int)
+   set i = +(i,x)
+
+%%ì˜¤ë¥˜ - ë¦¬í„´íƒ€ì…ì˜ ì •ì˜ì™€ ì‹¤ì œ íƒ€ì…ì´ ê°™ì§€ ì•ŠìŒ
+ method void get_i()
+   i
+
+let o1 = new cl(1000) in
   begin
-   set i = +(x,1)
+    send o1 sum(999);
+    send o1 get_i()
   end
 
-% == ¼±¾ğµÈ Ãß½ÂÅ¬·¡½º ¼±¾ğ ¾ÈµÇ¾î ÀÖÀ»°æ¿ì void ¿Í int°¡ ´Ù¸§
+% == 
+% TYPE: int, Result: 1999
 % =========================================================
-
-
